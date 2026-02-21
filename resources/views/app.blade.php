@@ -33,6 +33,55 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
+        @php
+            $baseUrl = rtrim(config('app.url'), '/');
+            $path = $page['url'] ?? '/';
+            $canonicalUrl = str_starts_with($path, 'http') ? $path : $baseUrl . $path;
+            $component = $page['component'] ?? '';
+            $settings = data_get($page, 'props.settings');
+
+            $seoTitle = match ($component) {
+                'welcome' => 'Blessed Digital Equb - Drive Your Dream. Secure Your Future.',
+                'prizes' => 'Prizes - Blessed Digital Equb',
+                'terms' => 'Terms & Conditions - Blessed Digital Equb',
+                'privacy' => 'Privacy Policy - Blessed Digital Equb',
+                default => config('app.name', 'Laravel'),
+            };
+
+            $seoDescription = match ($component) {
+                'welcome' => "Experience the future of saving with Ethiopia's premier digital Equb. Contribute monthly and participate in transparent draws to win exciting prizes.",
+                'prizes' => 'Explore monthly grand prizes and recent winners in the Blessed Digital Equb.',
+                'terms' => 'Read the Terms & Conditions for using Blessed Digital Equb.',
+                'privacy' => 'Read the Privacy Policy for Blessed Digital Equb.',
+                default => "Blessed Digital Equb - Ethiopia's digital Equb platform.",
+            };
+
+            $ogImage = data_get($settings, 'prizeImage')
+                ?: data_get($settings, 'prizeImages.0')
+                ?: '/apple-touch-icon.png';
+
+            if (! str_starts_with((string) $ogImage, 'http')) {
+                $ogImage = $baseUrl . '/' . ltrim((string) $ogImage, '/');
+            }
+        @endphp
+
+        <meta name="description" content="{{ $seoDescription }}">
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="{{ $canonicalUrl }}">
+
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="{{ config('app.name', 'Laravel') }}">
+        <meta property="og:title" content="{{ $seoTitle }}">
+        <meta property="og:description" content="{{ $seoDescription }}">
+        <meta property="og:url" content="{{ $canonicalUrl }}">
+        <meta property="og:image" content="{{ $ogImage }}">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ $seoTitle }}">
+        <meta name="twitter:description" content="{{ $seoDescription }}">
+        <meta name="twitter:image" content="{{ $ogImage }}">
+        <meta name="twitter:url" content="{{ $canonicalUrl }}">
+
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">

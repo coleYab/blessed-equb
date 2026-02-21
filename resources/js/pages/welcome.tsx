@@ -38,6 +38,8 @@ export default function Welcome() {
     const { auth } = usePage().props;
 
     const pageSettings = usePage().props.settings as AppSettings;
+    const page = usePage();
+    const appUrl = (page.props as { appUrl?: string }).appUrl;
     const settings: AppSettings = {
         ...pageSettings,
         prizeImages: PRIZE_IMAGES,
@@ -48,6 +50,21 @@ export default function Welcome() {
             ? settings.prizeImages
             : PRIZE_IMAGES;
     const t = TRANSLATIONS[language];
+
+    const seoTitle = 'Blessed Digital Equb - Drive Your Dream. Secure Your Future.';
+    const seoDescription = t.hero.desc;
+    const canonicalUrl = (() => {
+        if (typeof window !== 'undefined') {
+            return new URL(page.url, window.location.origin).toString();
+        }
+
+        if (appUrl) {
+            return new URL(page.url, appUrl).toString();
+        }
+
+        return page.url;
+    })();
+    const ogImage = settings.prizeImage || displayImages[0] || '/apple-touch-icon.png';
 
     const initialTicketBoard = usePage().props.ticketBoard as
         | TicketBoardPayload
@@ -249,6 +266,23 @@ export default function Welcome() {
     return (
         <>
             <Head title="Welcome">
+                <meta name="description" content={seoDescription} />
+                <link rel="canonical" href={canonicalUrl} />
+                <meta name="robots" content="index, follow" />
+
+                <meta property="og:type" content="website" />
+                <meta property="og:site_name" content="Blessed Digital Equb" />
+                <meta property="og:title" content={seoTitle} />
+                <meta property="og:description" content={seoDescription} />
+                <meta property="og:url" content={canonicalUrl} />
+                <meta property="og:image" content={ogImage} />
+
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={seoTitle} />
+                <meta name="twitter:description" content={seoDescription} />
+                <meta name="twitter:image" content={ogImage} />
+                <meta name="twitter:url" content={canonicalUrl} />
+
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link
                     href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600"
