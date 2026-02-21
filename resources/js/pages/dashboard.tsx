@@ -96,7 +96,7 @@ export default function Dashboard() {
     const [paymentStep, setPaymentStep] = useState<PaymentStep>('IDLE');
     const [showTicketModal, setShowTicketModal] = useState(false);
     const [showWinnerCelebration, setShowWinnerCelebration] = useState(true);
-    const [paymentAmount, setPaymentAmount] = useState<number>(user.contribution ?? 0);
+    const [paymentAmount, setPaymentAmount] = useState<number>(2000);
     const [paymentReceipt, setPaymentReceipt] = useState<File | null>(null);
     const [paymentError, setPaymentError] = useState<string | null>(null);
 
@@ -813,12 +813,12 @@ export default function Dashboard() {
                                                                     </p>
                                                                     <div className="mb-2 flex items-center justify-between">
                                                                         <p className="font-mono text-lg font-bold tracking-wide">
-                                                                            1000234567890
+                                                                            1000425274418
                                                                         </p>
                                                                         <button
                                                                             onClick={() =>
                                                                                 copyToClipboard(
-                                                                                    '1000234567890',
+                                                                                    '1000425274418',
                                                                                 )
                                                                             }
                                                                             className="p-1 text-purple-300 hover:text-white"
@@ -849,12 +849,12 @@ export default function Dashboard() {
                                                                     </p>
                                                                     <div className="mb-2 flex items-center justify-between">
                                                                         <p className="font-mono text-lg font-bold tracking-wide">
-                                                                            707070
+                                                                            0907525801
                                                                         </p>
                                                                         <button
                                                                             onClick={() =>
                                                                                 copyToClipboard(
-                                                                                    '707070',
+                                                                                    '0907525801',
                                                                                 )
                                                                             }
                                                                             className="p-1 text-blue-300 hover:text-white"
@@ -927,22 +927,11 @@ export default function Dashboard() {
                                                                 </p>
                                                                 <input
                                                                     type="number"
-                                                                    min={1}
+                                                                    min={2000}
+                                                                    max={2000}
                                                                     inputMode="numeric"
                                                                     value={paymentAmount}
-                                                                    onChange={(e) =>
-                                                                        setPaymentAmount(
-                                                                            Number(
-                                                                                e
-                                                                                    .target
-                                                                                    .value,
-                                                                            ),
-                                                                        )
-                                                                    }
-                                                                    disabled={
-                                                                        paymentStep ===
-                                                                        'PROCESSING'
-                                                                    }
+                                                                    disabled={ true }
                                                                     className="w-full rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm font-bold text-white outline-none ring-0 placeholder:text-stone-500 focus:border-amber-400/60"
                                                                 />
                                                             </div>
