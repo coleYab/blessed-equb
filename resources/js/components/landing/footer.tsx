@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Gem, Phone, MapPin, Facebook, Instagram, Send } from 'lucide-react';
+import { Phone, MapPin, Facebook, Instagram, Send } from 'lucide-react';
 import React from 'react';
 import { TRANSLATIONS } from '@/constants';
 import type { Language } from '@/types/app';
@@ -18,7 +18,7 @@ const Footer: React.FC<FooterProps> = ({ language = 'en' }) => {
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center space-x-2 mb-4">
               <div className="bg-amber-700 p-1.5 rounded-lg">
-                <Gem className="h-5 w-5 text-white" />
+                <img src="/mainlogo.png" alt="Blessed Equb Logo" className="h-5 w-5 rounded-sm" />
               </div>
               <span className="text-lg font-bold text-white">Blessed <span className="text-amber-400">የመኪና ዕቁብ</span></span>
             </div>

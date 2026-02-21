@@ -35,21 +35,18 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
+import { ADMIN_TRANSLATIONS } from '@/constants';
+import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import { notifications as adminNotifications } from '@/routes/admin';
-import type { BreadcrumbItem } from '@/types';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Notification',
-        href: adminNotifications().url,
-    },
-];
 
 interface Notification {
     id: number;
     title_en: string;
+    title_am?: string;
     message_en: string;
+    message_am?: string;
     is_urgent: boolean;
     link?: string;
     created_at: string; 
@@ -75,6 +72,9 @@ interface PageProps {
 
 export default function Notifications({ notifications }: PageProps) {
     const serverNotifications = notifications ?? [];
+
+    const { language } = useLanguage();
+    const t = ADMIN_TRANSLATIONS[language].notifications;
 
     const [sNotification, setsNotification] = useState<NotificationRow[]>(
         () => serverNotifications.map((n) => ({ ...n, read: false })),
@@ -200,31 +200,38 @@ export default function Notifications({ notifications }: PageProps) {
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Notification Management" />
+        <AppLayout
+            breadcrumbs={[
+                {
+                    title: t.breadcrumb,
+                    href: adminNotifications().url,
+                },
+            ]}
+        >
+            <Head title={t.headTitle} />
 
             <div className="w-full mx-auto p-4 md:p-6 lg:p-8 space-y-8">
                 
                 {/* Header Section */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between">
                     <div className="space-y-1">
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground">Notification Center</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground">{t.pageTitle}</h1>
                         <p className="text-muted-foreground text-sm md:text-base">
-                            Manage system broadcasts and view transmission history.
+                            {t.subtitle}
                         </p>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2 sm:flex sm:gap-3">
                         <div className="rounded-xl border border-border/40 bg-card px-4 py-3 shadow-sm">
-                            <div className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">Total</div>
+                            <div className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">{t.stats.total}</div>
                             <div className="mt-1 text-xl font-black text-foreground">{stats.total}</div>
                         </div>
                         <div className="rounded-xl border border-border/40 bg-card px-4 py-3 shadow-sm">
-                            <div className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">Unread</div>
+                            <div className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">{t.stats.unread}</div>
                             <div className="mt-1 text-xl font-black text-foreground">{stats.unread}</div>
                         </div>
                         <div className="rounded-xl border border-border/40 bg-card px-4 py-3 shadow-sm">
-                            <div className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">Urgent</div>
+                            <div className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">{t.stats.urgent}</div>
                             <div className="mt-1 text-xl font-black text-foreground">{stats.urgent}</div>
                         </div>
                     </div>
@@ -238,13 +245,13 @@ export default function Notifications({ notifications }: PageProps) {
                                 value="history" 
                                 className="px-4 md:px-6 rounded-md gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-primary"
                             >
-                                <History className="h-4 w-4" /> History
+                                <History className="h-4 w-4" /> {t.tabs.history}
                             </TabsTrigger>
                             <TabsTrigger 
                                 value="compose" 
                                 className="px-4 md:px-6 rounded-md gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-primary"
                             >
-                                <Send className="h-4 w-4" /> Compose
+                                <Send className="h-4 w-4" /> {t.tabs.compose}
                             </TabsTrigger>
                         </TabsList>
                     </div>
@@ -255,7 +262,7 @@ export default function Notifications({ notifications }: PageProps) {
                             <div className="relative flex-1 max-w-md">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input 
-                                    placeholder="Search by title..." 
+                                    placeholder={t.search.placeholder} 
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     className="pl-9 bg-background border-muted-foreground/20 focus-visible:ring-offset-0" 
@@ -264,9 +271,9 @@ export default function Notifications({ notifications }: PageProps) {
 
                             <Tabs value={historyFilter} onValueChange={(value) => setHistoryFilter(value as typeof historyFilter)}>
                                 <TabsList className="bg-muted/60 p-1 h-11 border border-border/40 rounded-lg">
-                                    <TabsTrigger value="ALL" className="px-3 rounded-md">All</TabsTrigger>
-                                    <TabsTrigger value="UNREAD" className="px-3 rounded-md">Unread</TabsTrigger>
-                                    <TabsTrigger value="URGENT" className="px-3 rounded-md">Urgent</TabsTrigger>
+                                    <TabsTrigger value="ALL" className="px-3 rounded-md">{t.filters.all}</TabsTrigger>
+                                    <TabsTrigger value="UNREAD" className="px-3 rounded-md">{t.filters.unread}</TabsTrigger>
+                                    <TabsTrigger value="URGENT" className="px-3 rounded-md">{t.filters.urgent}</TabsTrigger>
                                 </TabsList>
                             </Tabs>
                         </div>
@@ -379,17 +386,25 @@ export default function Notifications({ notifications }: PageProps) {
                                     <CardHeader className="space-y-1">
                                         <div className="flex items-start justify-between gap-3">
                                             <div>
-                                                <CardTitle className="text-base">{item.title_en}</CardTitle>
-                                                <CardDescription className="text-xs line-clamp-2">{item.message_en}</CardDescription>
+                                                <CardTitle className="text-base">
+                                                    {language === 'am'
+                                                        ? item.title_am || item.title_en
+                                                        : item.title_en}
+                                                </CardTitle>
+                                                <CardDescription className="text-xs line-clamp-2">
+                                                    {language === 'am'
+                                                        ? item.message_am || item.message_en
+                                                        : item.message_en}
+                                                </CardDescription>
                                             </div>
                                             <div className="flex flex-col items-end gap-2">
                                                 {item.is_urgent ? (
-                                                    <Badge variant="destructive">Urgent</Badge>
+                                                    <Badge variant="destructive">{t.badges.urgent}</Badge>
                                                 ) : (
-                                                    <Badge variant="outline">Standard</Badge>
+                                                    <Badge variant="outline">{t.badges.standard}</Badge>
                                                 )}
                                                 <Badge variant={item.read ? 'secondary' : 'outline'}>
-                                                    {item.read ? 'Read' : 'Unread'}
+                                                    {item.read ? t.badges.read : t.badges.unread}
                                                 </Badge>
                                             </div>
                                         </div>
@@ -407,10 +422,10 @@ export default function Notifications({ notifications }: PageProps) {
                                     </CardContent>
                                     <CardFooter className="grid grid-cols-2 gap-2">
                                         <Button variant="secondary" onClick={() => toggleRead(item)}>
-                                            {item.read ? 'Mark unread' : 'Mark read'}
+                                            {item.read ? t.actions.markUnread : t.actions.markRead}
                                         </Button>
                                         <Button variant="destructive" onClick={() => openDelete(item)}>
-                                            <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                            <Trash2 className="mr-2 h-4 w-4" /> {t.actions.delete}
                                         </Button>
                                     </CardFooter>
                                 </Card>
@@ -427,10 +442,10 @@ export default function Notifications({ notifications }: PageProps) {
                                         <div>
                                             <CardTitle className="text-xl flex items-center gap-2">
                                                 <Bell className="h-5 w-5 text-primary" />
-                                                Create System Broadcast
+                                                {t.compose.title}
                                             </CardTitle>
                                             <CardDescription className="mt-1.5">
-                                                Compose a message to be sent to all active users.
+                                                {t.compose.description}
                                             </CardDescription>
                                         </div>
                                     </div>
@@ -443,24 +458,24 @@ export default function Notifications({ notifications }: PageProps) {
                                         <div className="space-y-5">
                                             <div className="flex items-center gap-2 pb-2 border-b">
                                                 <Globe className="h-4 w-4 text-blue-500" />
-                                                <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">English Content</h3>
+                                                <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">{t.compose.englishContent}</h3>
                                             </div>
                                             
                                             <div className="space-y-2">
-                                                <Label htmlFor="title_en">Notification Title</Label>
+                                                <Label htmlFor="title_en">{t.compose.fields.titleEn}</Label>
                                                 <Input 
                                                     id="title_en" 
-                                                    placeholder="e.g., System Maintenance" 
+                                                    placeholder={t.compose.placeholders.titleEn} 
                                                     value={data.title_en}
                                                     onChange={(e) => setData((prev) => ({ ...prev, title_en: e.target.value }))}
                                                     className="bg-background"
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <Label htmlFor="msg_en">Message Body</Label>
+                                                <Label htmlFor="msg_en">{t.compose.fields.messageEn}</Label>
                                                 <Textarea 
                                                     id="msg_en" 
-                                                    placeholder="Enter the detailed message..." 
+                                                    placeholder={t.compose.placeholders.messageEn} 
                                                     className="min-h-[140px] resize-y bg-background"
                                                     value={data.message_en}
                                                     onChange={(e) => setData((prev) => ({ ...prev, message_en: e.target.value }))}
@@ -472,24 +487,24 @@ export default function Notifications({ notifications }: PageProps) {
                                         <div className="space-y-5">
                                             <div className="flex items-center gap-2 pb-2 border-b">
                                                 <Globe className="h-4 w-4 text-green-600" />
-                                                <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">Amharic Content</h3>
+                                                <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">{t.compose.amharicContent}</h3>
                                             </div>
 
                                             <div className="space-y-2">
-                                                <Label htmlFor="title_am">Notification Title (Amharic)</Label>
+                                                <Label htmlFor="title_am">{t.compose.fields.titleAm}</Label>
                                                 <Input 
                                                     id="title_am" 
-                                                    placeholder="ለምሳሌ፦ የስርዓት ጥገና" 
+                                                    placeholder={t.compose.placeholders.titleAm} 
                                                     value={data.title_am}
                                                     onChange={(e) => setData((prev) => ({ ...prev, title_am: e.target.value }))}
                                                     className="bg-background"
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <Label htmlFor="msg_am">Message Body (Amharic)</Label>
+                                                <Label htmlFor="msg_am">{t.compose.fields.messageAm}</Label>
                                                 <Textarea 
                                                     id="msg_am" 
-                                                    placeholder="ዝርዝር መልእክቱን እዚህ ያስገቡ..." 
+                                                    placeholder={t.compose.placeholders.messageAm} 
                                                     className="min-h-[140px] resize-y bg-background"
                                                     value={data.message_am}
                                                     onChange={(e) => setData((prev) => ({ ...prev, message_am: e.target.value }))}
@@ -502,35 +517,35 @@ export default function Notifications({ notifications }: PageProps) {
                                     <div className="bg-muted/20 p-4 md:p-6 rounded-xl border border-border/50 space-y-6">
                                         <div className="flex items-center gap-2 mb-2">
                                             <FileText className="h-4 w-4 text-primary" />
-                                            <h3 className="font-semibold text-sm text-foreground">Configuration</h3>
+                                            <h3 className="font-semibold text-sm text-foreground">{t.compose.configuration}</h3>
                                         </div>
                                         
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                                             <div className="space-y-2">
-                                                <Label htmlFor="link">Action Link (Optional)</Label>
+                                                <Label htmlFor="link">{t.compose.fields.actionLink}</Label>
                                                 <div className="relative">
                                                     <LinkIcon className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                                     <Input 
                                                         id="link" 
-                                                        placeholder="https://" 
+                                                        placeholder={t.compose.placeholders.actionLink} 
                                                         className="pl-9 bg-background"
                                                         value={data.link}
                                                         onChange={(e) => setData((prev) => ({ ...prev, link: e.target.value }))}
                                                     />
                                                 </div>
                                                 <p className="text-[0.8rem] text-muted-foreground">
-                                                    Users will be redirected here when they click the notification.
+                                                    {t.compose.actionLinkHint}
                                                 </p>
                                             </div>
 
                                             <div className={`flex items-center justify-between rounded-lg border p-4 transition-all duration-300 ${data.is_urgent ? 'bg-destructive/5 border-destructive/30' : 'bg-background border-border'}`}>
                                                 <div className="space-y-0.5">
                                                     <Label htmlFor="urgent-mode" className="text-base font-medium flex items-center gap-2">
-                                                        Urgent Broadcast
+                                                        {t.compose.fields.urgentBroadcast}
                                                         {data.is_urgent && <AlertTriangle className="h-4 w-4 text-destructive animate-pulse" />}
                                                     </Label>
                                                     <p className="text-[0.8rem] text-muted-foreground">
-                                                        Highlights the notification in red and pins it to top.
+                                                        {t.compose.urgentHint}
                                                     </p>
                                                 </div>
                                                 <Switch 
@@ -544,11 +559,11 @@ export default function Notifications({ notifications }: PageProps) {
                                 </CardContent>
                                 <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t bg-muted/10 p-6">
                                     <Button variant="ghost" type="button" onClick={() => reset()} className="w-full sm:w-auto text-muted-foreground hover:text-foreground">
-                                        Reset Fields
+                                        {t.compose.resetFields}
                                     </Button>
                                     <Button disabled={processing} className="w-full sm:w-auto gap-2 shadow-md">
                                         <Send className="h-4 w-4" />
-                                        {processing ? 'Broadcasting...' : 'Send Broadcast'}
+                                        {processing ? t.compose.broadcasting : t.compose.sendBroadcast}
                                     </Button>
                                 </CardFooter>
                             </Card>
@@ -559,14 +574,16 @@ export default function Notifications({ notifications }: PageProps) {
                 <Dialog open={confirmDeleteOpen} onOpenChange={(open) => !open && setConfirmDeleteOpen(false)}>
                     <DialogContent className="sm:max-w-lg">
                         <DialogHeader>
-                            <DialogTitle>Delete notification</DialogTitle>
+                            <DialogTitle>{t.deleteDialog.title}</DialogTitle>
                             <DialogDescription>
-                                {selectedNotification ? `${selectedNotification.title_en} (#${selectedNotification.id})` : ''}
+                                {selectedNotification
+                                    ? `${language === 'am' ? selectedNotification.title_am || selectedNotification.title_en : selectedNotification.title_en} (#${selectedNotification.id})`
+                                    : ''}
                             </DialogDescription>
                         </DialogHeader>
 
                         <div className="rounded-xl border border-border/60 bg-muted/20 p-4 text-sm text-foreground">
-                            This will remove the notification from the demo history.
+                            {t.deleteDialog.descriptionPrefix}
                         </div>
 
                         <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
@@ -578,7 +595,7 @@ export default function Notifications({ notifications }: PageProps) {
                                     setSelectedNotification(null);
                                 }}
                             >
-                                Cancel
+                                {t.actions.cancel}
                             </Button>
                             <Button
                                 type="button"
@@ -587,7 +604,7 @@ export default function Notifications({ notifications }: PageProps) {
                                 disabled={!selectedNotification}
                             >
                                 <Trash2 className="mr-2 h-4 w-4" />
-                                Delete
+                                {t.actions.delete}
                             </Button>
                         </div>
                     </DialogContent>

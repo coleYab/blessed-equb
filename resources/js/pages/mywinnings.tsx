@@ -21,6 +21,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { DEFAULT_SETTINGS } from '@/constants';
+import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import { mywinnings } from '@/routes/user';
 import type { BreadcrumbItem } from '@/types';
@@ -86,8 +87,6 @@ const TRANSLATIONS = {
         },
     },
 } as const;
-
-type Language = keyof typeof TRANSLATIONS;
 
 type WinnerMedia = {
     avatarUrl: string;
@@ -176,7 +175,7 @@ function formatDate(value: string): string {
 }
 
 export default function MyWinnings() {
-    const [language, setLanguage] = useState<Language>('en');
+    const { language } = useLanguage();
     const t = TRANSLATIONS[language];
 
     const hasWon = false;

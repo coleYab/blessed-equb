@@ -2,6 +2,7 @@ import { Head, usePage } from '@inertiajs/react';
 import { Banknote, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { useMemo } from 'react';
 import type { ReactElement } from 'react';
+import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import { mypayments } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
@@ -69,8 +70,6 @@ const TRANSLATIONS = {
     },
 } as const;
 
-type Language = keyof typeof TRANSLATIONS;
-
 const statusStyles: Record<PaymentRequest['status'], { className: string; icon: ReactElement }> = {
     APPROVED: {
         className: 'border-emerald-200 bg-emerald-50 text-emerald-700',
@@ -92,7 +91,7 @@ interface PageProps {
 
 export default function MyPayments({ payments } : PageProps) {
     const DEFAULT_SETTINGS = usePage().props.settings as AppSettings;
-    const language: Language = 'en';
+    const { language } = useLanguage();
     const t = TRANSLATIONS[language];
     const paymentsForCycle = payments;
 

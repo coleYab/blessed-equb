@@ -13,10 +13,11 @@ import {
 import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ADMIN_TRANSLATIONS } from '@/constants';
+import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard as adminDashboard } from '@/routes/admin';
 import type { BreadcrumbItem } from '@/types';
-import type { Language, PaymentRequest, AppSettings } from '@/types/app';
+import type { PaymentRequest, AppSettings } from '@/types/app';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -48,12 +49,12 @@ export default function Dashboard({
     const { props } = usePage();
     const settings = props.settings as AppSettings;
 
-    const language: Language = 'en';
+    const { language } = useLanguage();
     const t = ADMIN_TRANSLATIONS[language];
 
     const currentPot = useMemo(() => {
         return paymentsVerified * 2000;
-    }, [claimedTickets]);
+    }, [paymentsVerified]);
 
     const pendingPayments = paymentRequests;
 

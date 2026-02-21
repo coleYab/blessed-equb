@@ -3,6 +3,7 @@ import {
     CheckCircle,
     ChevronRight,
     Gem,
+    Globe,
     Lock,
     PartyPopper,
     Play,
@@ -15,8 +16,9 @@ import Features from '@/components/landing/features';
 import Footer from '@/components/landing/footer';
 import SocialProofSection from '@/components/landing/social-proof';
 import { PRIZE_IMAGES, TRANSLATIONS } from '@/constants';
+import { useLanguage } from '@/hooks/use-language';
 import { dashboard, login, register } from '@/routes';
-import type { AppSettings, Language } from '@/types/app';
+import type { AppSettings } from '@/types/app';
 
 type TicketBoardItem = { number: number; taken: boolean };
 
@@ -36,6 +38,7 @@ const PUBLIC_CHECK_AVAILABILITY_URL = '/tickets/public-check-availability';
 
 export default function Welcome() {
     const { auth } = usePage().props;
+    const { language, updateLanguage } = useLanguage();
 
     const pageSettings = usePage().props.settings as AppSettings;
     const page = usePage();
@@ -44,7 +47,6 @@ export default function Welcome() {
         ...pageSettings,
         prizeImages: PRIZE_IMAGES,
     };
-    const language: Language = 'en';
     const displayImages =
         settings.prizeImages && settings.prizeImages.length > 0
             ? settings.prizeImages
@@ -292,14 +294,14 @@ export default function Welcome() {
 
             <div className="flex min-h-screen flex-col items-center text-[#1b1b18] lg:justify-center">
                 <header className="sticky top-0 z-50 w-full not-has-[nav]:hidden">
-                    <div className="w-full border-b border-stone-200/20 bg-white/70 backdrop-blur-xl">
+                    <div className="w-full border-b border-stone-200/20 bg-gradient-to-br from-emerald-950 via-emerald-900 to-stone-900 backdrop-blur-xl">
                         <nav className="mx-auto flex w-full max-w-[90%] items-center justify-between gap-4 py-4 text-sm lg:max-w-4xl">
                             <div
                                 className="flex cursor-pointer items-center space-x-2"
                                 // onClick={() => setView('landing')}
                             >
                                 <div className="rounded-lg bg-amber-700 p-2">
-                                    <Gem className="h-6 w-6 text-white" />
+                                    <img src="/mainlogo.png" alt="Blessed Equb Logo" className="h-6 w-6 rounded-sm" />
                                 </div>
                                 <span className="text-xl font-bold tracking-wide text-amber-500 md:text-2xl">
                                     Blessed{' '}
@@ -307,14 +309,44 @@ export default function Welcome() {
                                 </span>
                             </div>
 
-                            <div>
+                            <div className="flex items-center space-x-4">
+                                {/* Quick Links */}
+                                <div className="hidden md:flex items-center space-x-6">
+                                    <a
+                                        href="#features"
+                                        className="text-amber-100 hover:text-amber-300 transition-colors font-medium"
+                                    >
+                                        {t.nav.how}
+                                    </a>
+                                    <Link
+                                        href="/prizes"
+                                        prefetch
+                                        className="text-amber-100 hover:text-amber-300 transition-colors font-medium"
+                                    >
+                                        {t.nav.prizes}
+                                    </Link>
+                                </div>
+
+                                {/* Beautiful Language Toggle */}
+                                <div className="relative">
+                                    <button
+                                        onClick={() => updateLanguage(language === 'am' ? 'en' : 'am')}
+                                        className="flex items-center space-x-2 rounded-lg border border-amber-600/30 bg-amber-900/20 px-3 py-2 text-sm font-semibold text-amber-100 shadow-sm transition-all hover:border-amber-600/50 hover:bg-amber-900/30"
+                                        aria-label="Toggle language"
+                                    >
+                                        <Globe className="h-4 w-4" />
+                                        <span className="font-mono font-bold">{language === 'am' ? 'AM' : 'EN'}</span>
+                                    </button>
+                                </div>
+
+                                {/* Auth Links */}
                                 {auth.user ? (
                                     <Link
                                         href={dashboard().url}
                                         className="inline-flex items-center justify-center rounded-lg border border-red-900/30 bg-white px-5 py-2 text-sm font-semibold leading-normal text-red-900 shadow-sm transition-colors hover:border-red-900/50 hover:bg-red-50"
                                         prefetch
                                     >
-                                        Dashboard
+                                        {t.nav.dashboard}
                                     </Link>
                                 ) : (
                                     <>
@@ -323,14 +355,14 @@ export default function Welcome() {
                                             className="inline-flex items-center justify-center rounded-lg border border-transparent bg-white px-5 py-2 text-sm font-semibold leading-normal text-red-900 transition-colors hover:border-red-900/30 hover:bg-red-50"
                                             prefetch
                                         >
-                                            Log in
+                                            {t.nav.login}
                                         </Link>
                                         <Link
                                             href={register().url}
                                             className="inline-flex items-center justify-center rounded-lg bg-red-900 px-5 py-2 text-sm font-semibold leading-normal text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-red-800"
                                             prefetch
                                         >
-                                            Register
+                                            {t.nav.register}
                                         </Link>
                                     </>
                                 )}
@@ -747,7 +779,7 @@ export default function Welcome() {
 
                         <section
                             id="waitlist-section"
-                            className="bg-white py-16 text-center"
+                            className="relative overflow-hidden bg-gradient-to-b from-stone-50 to-white py-24"
                         >
                             <div className="mx-auto max-w-4xl px-4">
                                 <h2 className="mb-6 text-3xl font-bold text-emerald-900">
@@ -767,7 +799,7 @@ export default function Welcome() {
                                 </Link>
                             </div>
                         </section>
-                        <Footer language='en' />
+                        <Footer language={language} />
                     </main>
                 </div>
                 {/* <div className="hidden h-14.5 lg:block"></div> */}

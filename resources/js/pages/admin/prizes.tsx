@@ -12,10 +12,11 @@ import {
 } from 'lucide-react';
 import { useMemo, useState, type FormEvent } from 'react';
 import { ADMIN_TRANSLATIONS } from '@/constants';
+import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import { settings as appSettings } from '@/routes/admin';
 import type { BreadcrumbItem } from '@/types';
-import type { AppSettings, Language, Winner } from '@/types/app';
+import type { AppSettings, Winner } from '@/types/app';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -28,7 +29,7 @@ export default function Settings() {
     const { settings } = usePage().props;
     const DEFAULT_SETTINGS = settings as AppSettings;
     console.log(DEFAULT_SETTINGS);
-    const language: Language = 'en';
+    const { language } = useLanguage();
     const t = ADMIN_TRANSLATIONS[language];
 
     const demoTickets = useMemo(() => {

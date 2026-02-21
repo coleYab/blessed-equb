@@ -2,6 +2,7 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { Calendar, Plus, Save, Ticket, Trophy,  X } from 'lucide-react';
 import { useState } from 'react';
 import { ADMIN_TRANSLATIONS, PRIZE_IMAGES } from '@/constants';
+import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import { update as updateSettings } from '@/routes/admin/settings';
 import type { BreadcrumbItem } from '@/types';
@@ -95,7 +96,8 @@ export default function Competition({ tickets } : PageProps) {
     };
 
 
-    const t = ADMIN_TRANSLATIONS['en']
+    const { language } = useLanguage();
+    const t = ADMIN_TRANSLATIONS[language];
 
     const saveSettings = (section: 'Draw Schedule' | 'Current Prize'): void => {
         router.put(

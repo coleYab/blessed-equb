@@ -144,7 +144,7 @@ class PaymentsController extends Controller
             $payment->receiptUrl = '/storage/' . $path;
         }
 
-        $payment->amount = $request->amount;
+        $payment->amount = 2000;
         $payment->requestedTicket = $request->requestedTicket;
         $payment->save();
 

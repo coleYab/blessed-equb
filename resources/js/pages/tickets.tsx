@@ -3,9 +3,10 @@ import { CheckCircle, Clock, Ticket as TicketIcon, XCircle, AlertCircle } from '
 import { useMemo } from 'react';
 import type { ReactElement } from 'react';
 import AppLayout from '@/layouts/app-layout';
+import { useLanguage } from '@/hooks/use-language';
 import { mytickets } from '@/routes/user';
 import type { BreadcrumbItem } from '@/types';
-import type { AppSettings, Language } from '@/types/app';
+import type { AppSettings } from '@/types/app';
 
 // 1. Unified Status Types to match your backend/props
 type TicketStatus = 'AVAILABLE' | 'PENDING' | 'SOLD' | 'VOID';
@@ -98,7 +99,7 @@ const statusStyles: Record<TicketStatus, { label: string; className: string; ico
 export default function Tickets({ tickets }: PageProps) {
     // Accessing shared settings from Inertia
     const settings  = usePage().props.settings as AppSettings;
-    const language: Language = 'en';
+    const { language } = useLanguage();
     const t = TRANSLATIONS[language];
 
     console.log(tickets);

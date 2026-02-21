@@ -21,6 +21,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import { mycycle } from '@/routes/user';
 import type { BreadcrumbItem } from '@/types';
@@ -91,8 +92,6 @@ const TRANSLATIONS = {
     },
 } as const;
 
-type Language = keyof typeof TRANSLATIONS;
-
 type CycleWinner = {
     id: string;
     fullName: string;
@@ -140,7 +139,7 @@ function formatDate(value: string): string {
 }
 
 export default function PastCycles() {
-    const [language, setLanguage] = useState<Language>('en');
+    const { language } = useLanguage();
     const t = TRANSLATIONS[language];
 
     const settings = usePage().props.settings as AppSettings | null;

@@ -41,11 +41,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { ADMIN_TRANSLATIONS } from '@/constants';
+import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import { settings as appSettings } from '@/routes/admin';
 import type { BreadcrumbItem } from '@/types';
 import type { AdminUser as User } from '@/types/app';
-import type { Language } from '@/types/app';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -69,7 +69,7 @@ export default function Users({
     users
 }: PageProps) {
     const { status } = usePage<PageProps>().props;
-    const language: Language = 'en';
+    const { language } = useLanguage();
     const t = ADMIN_TRANSLATIONS[language];
 
     const [tab, setTab] = useState<'ALL' | 'VERIFIED' | 'PENDING' | 'BANNED'>('ALL');

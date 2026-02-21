@@ -2,7 +2,7 @@ import type { AppSettings } from "@/types/app";
 
 export const TRANSLATIONS = {
   en: {
-    nav: { home: "Home", how: "How It Works", prizes: "Prizes", join: "Join Now", login: "Login", logout: "Logout", dashboard: "Dashboard", secure: "Secure Session", profile: "Profile" },
+    nav: { home: "Home", how: "How It Works", prizes: "Prizes", join: "Join Now", login: "Login", register: "Register", logout: "Logout", dashboard: "Dashboard", secure: "Secure Session", profile: "Profile" },
     hero: { subtitle: "TO DRAW THIS CYCLES PRIZE:", subtitle_today: "TODAY ONE LUCKY PERSON WILL TAKE THE CAR", title1: "Drive Your Dream.", title2: "Secure Your Future.", desc: "Experience the future of saving with Ethiopia's premier digital Equb. We combine tradition with technology to turn your monthly contributions into the car of your dreams.", cta: "Start Saving Today", watch: "Watch Video", prize_label: "This Month's Prize", prize_value: "Value", prize_name: "BYD E2 Luxury 2025" },
     stats: { members: "Active Members", cars: "Cars Delivered", pot: "Total Pot Value", trust: "Trust Score", taken: "Taken Numbers", lucky: "Lucky Numbers" },
     features: {
@@ -28,6 +28,7 @@ export const TRANSLATIONS = {
         btn: "Join the Waitlist"
     },
     prizes_page: {
+          nav: { home: "Home", how: "How It Works", prizes: "Prizes", join: "Join Now", login: "Login", register: "Register", logout: "Logout", dashboard: "Dashboard", secure: "Secure Session", profile: "Profile" },
         title: "Monthly Grand Prizes",
         subtitle: "Every month, one lucky member drives away in a brand new car.",
         current_prize: "This Month's Grand Prize",
@@ -44,9 +45,30 @@ export const TRANSLATIONS = {
         heading_register: "Create Account",
         subheading: "Enter your details to access your dashboard",
         subheading_register: "Join the community to start winning",
-        label_name: "Full Name",
+        auth_layout_title_login: "Log in to your account",
+        auth_layout_description_login: "Enter your email and password below to log in",
+        auth_layout_title_register: "Create an account",
+        auth_layout_description_register: "Enter your details below to create your account",
+        head_login: "Log in",
+        head_register: "Register",
+        label_email: "Email address",
+        placeholder_email: "email@example.com",
+        label_password: "Password",
+        placeholder_password: "Password",
+        label_remember: "Remember me",
+        link_forgot_password: "Forgot password?",
+        label_name: "Name",
+        placeholder_name: "Full name",
+        label_confirm_password: "Confirm password",
+        placeholder_confirm_password: "Confirm password",
+        btn_login_action: "Log in",
+        btn_register_action: "Create account",
+        register_prompt: "Don't have an account?",
+        login_prompt: "Already have an account?",
+        btn_register: "Sign up",
         name_notice: "Important: Name must match your Kebele ID",
         label_phone: "Phone Number",
+        placeholder_phone: "0912345678",
         label_tier: "Monthly Contribution",
         tier_1: "Standard - 5,000 ETB",
         tier_2: "Standard - 10,000 ETB",
@@ -54,12 +76,8 @@ export const TRANSLATIONS = {
         terms_agree: "I agree to the",
         terms_link: "Terms & Conditions",
         btn_login: "Secure Login",
-        btn_register_action: "Register Account",
         btn_processing: "Processing...",
         back: "Back to Home",
-        register_prompt: "Don't have an account?",
-        login_prompt: "Already have an account?",
-        btn_register: "Register Now",
         btn_login_link: "Login Here"
     },
     dashboard: {
@@ -139,7 +157,7 @@ export const TRANSLATIONS = {
     }
   },
   am: {
-    nav: { home: "መነሻ", how: "እንዴት ይሰራል", prizes: "ሽልማቶች", join: "ይመዝገቡ", login: "ይግቡ", logout: "ውጣ", dashboard: "ዳሽቦርድ", secure: "ደህንነቱ የተጠበቀ", profile: "ፕሮፋይል" },
+    nav: { home: "መነሻ", how: "እንዴት ይሰራል", prizes: "ሽልማቶች", join: "ይመዝገቡ", login: "ይግቡ", register: "ይመዝገቡ", logout: "ውጣ", dashboard: "ዳሽቦርድ", secure: "ደህንነቱ የተጠበቀ", profile: "ፕሮፋይል" },
     hero: { subtitle: "የዚህ ዙር እጣ ሊወጣ የቀረው ጊዜ:", subtitle_today: "ዛሬ አንድ እድለኛ ሰው መኪናውን ይረከባል", title1: "ህልምዎን ይንዱ።", title2: "ነገዎን ያረጋግጡ።", desc: "የቁጠባ ባህልን ከዘመናዊ ቴክኖሎጂ ጋር በማጣመር የህልም መኪናዎን ባለቤት የሚያደርግዎ የኢትዮጵያ ቀዳሚ ዲጂታል እቁብ።", cta: "ዛሬ መቆጠብ ይጀምሩ", watch: "ቪዲዮ ይመልከቱ", prize_label: "የዚህ ወር ሽልማት", prize_value: "ዋጋ", prize_name: "BYD E2 Luxury 2025" },
     stats: { members: "ንቁ አባላት", cars: "የተሰጡ መኪኖች", pot: "ጠቅላላ የገንዘብ መጠን", trust: "የታማኝነት ነጥብ", taken: "የተያዙ ቁጥሮች", lucky: "እድለኛ ቁጥሮች" },
     features: {
@@ -165,6 +183,7 @@ export const TRANSLATIONS = {
         btn: "አሁኑኑ ይመዝገቡ"
     },
     prizes_page: {
+          nav: { home: "መነሻ", how: "እንዴት ይሰራል", prizes: "ሽልማቶች", join: "ይመዝገቡ", login: "ይግቡ", register: "ይመዝገቡ", logout: "ውጣ", dashboard: "ዳሽቦርድ", secure: "ደህንነቱ የተጠበቀ", profile: "ፕሮፋይል" },
         title: "ወራዊ ታላላቅ ሽልማቶች",
         subtitle: "በየወሩ አንድ እድለኛ አባል አዲስ መኪና ይዞ ወደ ቤቱ ይሄዳል።",
         current_prize: "የዚህ ወር ታላቅ ሽልማት",
@@ -181,9 +200,30 @@ export const TRANSLATIONS = {
         heading_register: "መለያ ይፍጠሩ",
         subheading: "ወደ ዳሽቦርድ ለመግባት መረጃዎን ያስገቡ",
         subheading_register: "ማህበረሰቡን ተቀላቅለው ማሸነፍ ይጀምሩ",
-        label_name: "ሙሉ ስም",
+        auth_layout_title_login: "ወደ መለያዎ ይግቡ",
+        auth_layout_description_login: "ለመግባት ኢሜይልዎን እና የይለፍ ቃልዎን ከታች ያስገቡ",
+        auth_layout_title_register: "መለያ ይፍጠሩ",
+        auth_layout_description_register: "መለያ ለመፍጠር መረጃዎን ከታች ያስገቡ",
+        head_login: "ግባ",
+        head_register: "ይመዝገቡ",
+        label_email: "ኢሜይል አድራሻ",
+        placeholder_email: "email@example.com",
+        label_password: "የይለፍ ቃል",
+        placeholder_password: "የይለፍ ቃል",
+        label_remember: "አስታውሰኝ",
+        link_forgot_password: "የይለፍ ቃል ረሱ?",
+        label_name: "ስም",
+        placeholder_name: "ሙሉ ስም",
+        label_confirm_password: "የይለፍ ቃል አረጋግጥ",
+        placeholder_confirm_password: "የይለፍ ቃል አረጋግጥ",
+        btn_login_action: "ግባ",
+        btn_register_action: "መለያ ፍጠር",
+        register_prompt: "መለያ የለዎትም?",
+        login_prompt: "መለያ አለዎት?",
+        btn_register: "ይመዝገቡ",
         name_notice: "ማሳሰቢያ: ስምዎ በመታወቂያ ላይ ካለው ጋር መመሳሰል አለበት",
         label_phone: "ስልክ ቁጥር",
+        placeholder_phone: "0912345678",
         label_tier: "ወራዊ ክፍያ",
         tier_1: "መደበኛ - 5,000 ብር",
         tier_2: "መደበኛ - 10,000 ብር",
@@ -191,12 +231,8 @@ export const TRANSLATIONS = {
         terms_agree: "በ",
         terms_link: "ውሎች እና ሁኔታዎች እስማማለሁ",
         btn_login: "ይግቡ",
-        btn_register_action: "መለያ ይፍጠሩ",
         btn_processing: "በማስኬድ ላይ...",
         back: "ወደ መነሻ ተመለስ",
-        register_prompt: "መለያ የለዎትም?",
-        login_prompt: "መለያ አለዎት?",
-        btn_register: "አሁኑኑ ይመዝገቡ",
         btn_login_link: "እዚህ ይግቡ"
     },
     dashboard: {
@@ -343,6 +379,72 @@ export const ADMIN_TRANSLATIONS = {
       settings: "App Settings",
       exit: "Exit Admin"
     },
+    notifications: {
+      breadcrumb: "Notifications",
+      headTitle: "Notification Management",
+      pageTitle: "Notification Center",
+      subtitle: "Manage system broadcasts and view transmission history.",
+      stats: {
+        total: "Total",
+        unread: "Unread",
+        urgent: "Urgent"
+      },
+      tabs: {
+        history: "History",
+        compose: "Compose"
+      },
+      search: {
+        placeholder: "Search by title..."
+      },
+      filters: {
+        all: "All",
+        unread: "Unread",
+        urgent: "Urgent"
+      },
+      badges: {
+        urgent: "Urgent",
+        standard: "Standard",
+        read: "Read",
+        unread: "Unread"
+      },
+      actions: {
+        markRead: "Mark read",
+        markUnread: "Mark unread",
+        delete: "Delete",
+        cancel: "Cancel"
+      },
+      compose: {
+        title: "Create System Broadcast",
+        description: "Compose a message to be sent to all active users.",
+        englishContent: "English Content",
+        amharicContent: "Amharic Content",
+        fields: {
+          titleEn: "Notification Title",
+          messageEn: "Message Body",
+          titleAm: "Notification Title (Amharic)",
+          messageAm: "Message Body (Amharic)",
+          actionLink: "Action Link (Optional)",
+          urgentBroadcast: "Urgent Broadcast"
+        },
+        placeholders: {
+          titleEn: "e.g., System Maintenance",
+          messageEn: "Enter the detailed message...",
+          titleAm: "ለምሳሌ፦ የስርዓት ጥገና",
+          messageAm: "ዝርዝር መልእክቱን እዚህ ያስገቡ...",
+          actionLink: "https://"
+        },
+        configuration: "Configuration",
+        actionLinkHint: "Users will be redirected here when they click the notification.",
+        urgentHint: "Highlights the notification in red and pins it to top.",
+        resetFields: "Reset Fields",
+        broadcasting: "Broadcasting...",
+        sendBroadcast: "Send Broadcast"
+      },
+      deleteDialog: {
+        title: "Delete notification",
+        descriptionPrefix: "This will remove the notification from the demo history."
+      }
+    },
     dashboard: {
       overview: "Dashboard Overview",
       totalPot: "Total Pot",
@@ -447,6 +549,72 @@ export const ADMIN_TRANSLATIONS = {
       notifications: "ማሳወቂያዎች",
       settings: "ቅንብሮች",
       exit: "ውጣ"
+    },
+    notifications: {
+      breadcrumb: "ማሳወቂያዎች",
+      headTitle: "የማሳወቂያ አስተዳደር",
+      pageTitle: "የማሳወቂያ ማዕከል",
+      subtitle: "የስርዓት ማስተላለፊያዎችን ያስተዳድሩ እና የተላኩ መልእክቶችን ታሪክ ይመልከቱ።",
+      stats: {
+        total: "ጠቅላላ",
+        unread: "ያልተነበቡ",
+        urgent: "አስቸኳይ"
+      },
+      tabs: {
+        history: "ታሪክ",
+        compose: "ላክ"
+      },
+      search: {
+        placeholder: "በርዕስ ይፈልጉ..."
+      },
+      filters: {
+        all: "ሁሉም",
+        unread: "ያልተነበቡ",
+        urgent: "አስቸኳይ"
+      },
+      badges: {
+        urgent: "አስቸኳይ",
+        standard: "መደበኛ",
+        read: "ተነብቧል",
+        unread: "ያልተነበበ"
+      },
+      actions: {
+        markRead: "ተነብቧል አድርግ",
+        markUnread: "ያልተነበበ አድርግ",
+        delete: "ሰርዝ",
+        cancel: "ተው"
+      },
+      compose: {
+        title: "የስርዓት ማስታወቂያ ፍጠር",
+        description: "ለሁሉም ንቁ ተጠቃሚዎች የሚላክ መልእክት ያቀናብሩ።",
+        englishContent: "የእንግሊዝኛ ይዘት",
+        amharicContent: "የአማርኛ ይዘት",
+        fields: {
+          titleEn: "የማሳወቂያ ርዕስ",
+          messageEn: "የመልእክት ይዘት",
+          titleAm: "የማሳወቂያ ርዕስ (አማርኛ)",
+          messageAm: "የመልእክት ይዘት (አማርኛ)",
+          actionLink: "የእርምጃ አገናኝ (አማራጭ)",
+          urgentBroadcast: "አስቸኳይ ማስታወቂያ"
+        },
+        placeholders: {
+          titleEn: "ለምሳሌ፦ System Maintenance",
+          messageEn: "ዝርዝር መልእክቱን እዚህ ያስገቡ...",
+          titleAm: "ለምሳሌ፦ የስርዓት ጥገና",
+          messageAm: "ዝርዝር መልእክቱን እዚህ ያስገቡ...",
+          actionLink: "https://"
+        },
+        configuration: "ቅንብር",
+        actionLinkHint: "ተጠቃሚዎች ማሳወቂያውን ሲጫኑ ወደዚህ ይመራሉ።",
+        urgentHint: "ማሳወቂያውን በቀይ ያሳያል እና ከላይ ያስቀምጣል።",
+        resetFields: "መስኮችን አጽዳ",
+        broadcasting: "በመላክ ላይ...",
+        sendBroadcast: "ማስታወቂያ ላክ"
+      },
+      deleteDialog: {
+        title: "ማሳወቂያ ሰርዝ",
+        descriptionPrefix: "ይህ ማሳወቂያውን ከሙከራ ታሪክ ያስወግዳል።"
+      }
     },
     dashboard: {
       overview: "የዳሽቦርድ አጠቃላይ እይታ",

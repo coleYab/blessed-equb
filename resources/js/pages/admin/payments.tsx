@@ -30,6 +30,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ADMIN_TRANSLATIONS } from '@/constants';
+import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import { payments as adminPayments } from '@/routes/admin';
 import type { BreadcrumbItem } from '@/types';
@@ -42,80 +43,13 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const getEthiopianDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return dateStr;
-
-    const gregYear = date.getFullYear();
-    const nextGregYear = gregYear + 1;
-    const isNextGregLeap =
-        (nextGregYear % 4 === 0 && nextGregYear % 100 !== 0) ||
-        nextGregYear % 400 === 0;
-    const newYearDayInThisGregYear = isNextGregLeap ? 12 : 11;
-    const ethNewYearDate = new Date(gregYear, 8, newYearDayInThisGregYear);
-
-    let ethYear, diffDays;
-
-    if (date >= ethNewYearDate) {
-        ethYear = gregYear - 7;
-        diffDays = Math.floor(
-            (date.getTime() - ethNewYearDate.getTime()) /
-                (1000 * 60 * 60 * 24)
-        );
-    } else {
-        ethYear = gregYear - 8;
-        const currentGregLeap =
-            (gregYear % 4 === 0 && gregYear % 100 !== 0) ||
-            gregYear % 400 === 0;
-        const prevNewYearDay = currentGregLeap ? 12 : 11;
-        const prevEthNewYearDate = new Date(
-            gregYear - 1,
-            8,
-            prevNewYearDay
-        );
-
-        diffDays = Math.floor(
-            (date.getTime() - prevEthNewYearDate.getTime()) /
-                (1000 * 60 * 60 * 24)
-        );
-    }
-
-    const ethMonthIndex = Math.floor(diffDays / 30);
-    const ethDay = (diffDays % 30) + 1;
-
-    const ET_MONTHS = [
-        'Meskerem',
-        'Tikimt',
-        'Hidar',
-        'Tahsas',
-        'Tir',
-        'Yekatit',
-        'Megabit',
-        'Miyazia',
-        'Ginbot',
-        'Sene',
-        'Hamle',
-        'Nehase',
-        'Pagume',
-    ];
-
-    const monthName = ET_MONTHS[ethMonthIndex] || 'Unknown';
-
-    const time = date.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-    });
-
-    return `${monthName} ${ethDay}, ${ethYear} at ${time}`;
-};
-
 interface PageProps {
     paymentRequest: PaymentRequest[];
 }
 
 export default function Payments({ paymentRequest }: PageProps) {
-    const t = ADMIN_TRANSLATIONS['en'];
+    const { language } = useLanguage();
+    const t = ADMIN_TRANSLATIONS[language];
 
     const [requests, setRequests] =
         useState<PaymentRequest[]>(paymentRequest);
@@ -132,7 +66,7 @@ export default function Payments({ paymentRequest }: PageProps) {
         useState<'APPROVE' | 'REJECT'>('APPROVE');
     const [decisionRequest, setDecisionRequest] =
         useState<PaymentRequest | null>(null);
-    const [rejectReason, setRejectReason] = '';
+    const [rejectReason, setRejectReason] = useState('');
     const [processing, setProcessing] = useState(false);
 
     const stats = useMemo(() => {

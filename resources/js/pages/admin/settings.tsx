@@ -19,11 +19,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import { settings as appSettingsRoute } from '@/routes/admin';
 import { update as updateSettings } from '@/routes/admin/settings';
 import type { BreadcrumbItem } from '@/types';
-import type { AppSettings, Language } from '@/types/app';
+import type { AppSettings } from '@/types/app';
 
 interface PageProps {
     settings: AppSettings;
@@ -133,7 +134,7 @@ const TRANSLATIONS = {
 
 export default function Settings() {
     const { settings, status } = usePage<PageProps>().props;
-    const language: Language = 'en';
+    const { language } = useLanguage();
     const t = TRANSLATIONS[language];
 
     // Modern Inertia: useForm handles state, processing, errors, and dirty checking

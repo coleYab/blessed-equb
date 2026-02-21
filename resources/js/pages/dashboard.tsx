@@ -4,6 +4,7 @@ import { Clock, CheckCircle, Bell, Video, ExternalLink, Upload, PlusCircle, Buil
 import { useEffect, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { PRIZE_IMAGES, TRANSLATIONS } from '@/constants';
+import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import ActivityTimeline, { type RecentActivityItem } from '@/pages/dashboard/activity-timeline';
 import TicketSelectionModal from '@/pages/dashboard/ticket-selection-modal';
@@ -39,6 +40,12 @@ type TicketBoardPayload = {
     nextCursor: string | null;
 };
 
+type TicketBoardPage = {
+    props: {
+        ticketBoard: TicketBoardPayload;
+    };
+};
+
 type PaymentStep =
     | 'IDLE'
     | 'METHOD'
@@ -69,7 +76,7 @@ export default function Dashboard() {
     const recentActivities = (usePage().props.recentActivities ?? []) as RecentActivityItem[];
     const serverMyTickets = (usePage().props.myTickets ?? []) as Array<{ ticketNumber: number; status: string; cycle?: number | null }>;
 
-    const [notifications, setNotifications] = useState<AppNotification[]>(() => {
+    const [notifications] = useState<AppNotification[]>(() => {
         return serverNotifications.map((n) => ({
             id: n.id,
             title: n.title,
@@ -83,7 +90,7 @@ export default function Dashboard() {
     const settings = {
         ...DEFAULT_SETTINGS,
     };
-    const language = 'en';
+    const { language } = useLanguage();
 
     // Payment Flow State
     const [paymentStep, setPaymentStep] = useState<PaymentStep>('IDLE');
@@ -299,8 +306,8 @@ export default function Dashboard() {
                     preserveState: true,
                     only: ['ticketBoard'],
                     onSuccess: (page) => {
-                        const payload = (page.props as any)
-                            .ticketBoard as TicketBoardPayload;
+                        const payload = (page as unknown as TicketBoardPage).props
+                            .ticketBoard;
 
                         setTickets((prev) => {
                             const existing = new Set(prev.map((t) => t.number));

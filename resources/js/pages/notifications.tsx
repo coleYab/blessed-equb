@@ -15,6 +15,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { DEFAULT_SETTINGS } from '@/constants';
+import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import { mynotifications } from '@/routes/user';
 import type { BreadcrumbItem } from '@/types';
@@ -106,8 +107,6 @@ const TRANSLATIONS = {
     },
 } as const;
 
-type Language = keyof typeof TRANSLATIONS;
-
 type ActivityType =
     | 'JOINED'
     | 'SUBSCRIBED'
@@ -163,7 +162,7 @@ function getCsrfToken(): string {
 }
 
 export default function Notifications({ notifications }: PageProps) {
-    const language: Language = 'en';
+    const { language } = useLanguage();
     const t = TRANSLATIONS[language];
 
     const [filter, setFilter] = useState<'ALL' | 'UNREAD' | 'URGENT'>('ALL');
