@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AppNotification;
+use App\Models\AppNotificationRead;
 use App\Models\AppSetting;
 use App\Models\RecentActivity;
 use App\Models\Ticket;
@@ -33,16 +34,28 @@ class TicketController extends Controller
             ->orderBy('ticketNumber')
             ->get(['id', 'ticketNumber', 'status', 'reservedAt', 'paymentId']);
 
-        $notifications = AppNotification::query()
-            ->where(function ($query) use ($user): void {
-                $query->whereNull('target_user_id');
-                $query->orWhere('target_user_id', $user->id);
+        $notificationModels = AppNotification::query()
+            ->when($user, function ($query) use ($user): void {
+                $query->where(function ($query) use ($user): void {
+                    $query->whereNull('target_user_id');
+                    $query->orWhere('target_user_id', $user->id);
+                });
             })
             ->latest('sent_at')
             ->latest('created_at')
             ->limit(10)
-            ->get()
-            ->map(function (AppNotification $notification): array {
+            ->get();
+
+        $readNotificationIds = AppNotificationRead::query()
+            ->where('user_id', $user->id)
+            ->whereIn('app_notification_id', $notificationModels->pluck('id'))
+            ->pluck('app_notification_id')
+            ->all();
+
+        $readNotificationIdSet = array_fill_keys($readNotificationIds, true);
+
+        $notifications = $notificationModels
+            ->map(function (AppNotification $notification) use ($readNotificationIdSet): array {
                 return [
                     'id' => $notification->id,
                     'title' => [
@@ -55,6 +68,7 @@ class TicketController extends Controller
                     ],
                     'time' => ($notification->sent_at ?? $notification->created_at)?->toIso8601String(),
                     'urgent' => $notification->is_urgent,
+                    'read' => isset($readNotificationIdSet[$notification->id]),
                     'link' => $notification->link,
                 ];
             })
@@ -286,7 +300,7 @@ class TicketController extends Controller
     {
         $user = Auth::user();
 
-        $notifications = AppNotification::query()
+        $notificationModels = AppNotification::query()
             ->when($user, function ($query) use ($user): void {
                 $query->where(function ($query) use ($user): void {
                     $query->whereNull('target_user_id');
@@ -295,8 +309,18 @@ class TicketController extends Controller
             })
             ->latest('sent_at')
             ->latest('created_at')
-            ->get()
-            ->map(function (AppNotification $notification): array {
+            ->get();
+
+        $readNotificationIds = AppNotificationRead::query()
+            ->where('user_id', $user->id)
+            ->whereIn('app_notification_id', $notificationModels->pluck('id'))
+            ->pluck('app_notification_id')
+            ->all();
+
+        $readNotificationIdSet = array_fill_keys($readNotificationIds, true);
+
+        $notifications = $notificationModels
+            ->map(function (AppNotification $notification) use ($readNotificationIdSet): array {
                 return [
                     'id' => $notification->id,
                     'title' => [
@@ -309,6 +333,7 @@ class TicketController extends Controller
                     ],
                     'time' => ($notification->sent_at ?? $notification->created_at)?->toIso8601String(),
                     'urgent' => $notification->is_urgent,
+                    'read' => isset($readNotificationIdSet[$notification->id]),
                     'link' => $notification->link,
                 ];
             });

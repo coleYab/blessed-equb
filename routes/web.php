@@ -3,6 +3,7 @@
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\AppSettingsController;
+use App\Http\Controllers\AppNotificationReadController;
 use App\Http\Controllers\RecentActivityController;
 use App\Http\Controllers\Admin\WinnerController;
 use Illuminate\Support\Facades\Route;
@@ -68,6 +69,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/payments/{id}', [PaymentsController::class, 'update'])->name('payments.update');
     Route::delete('/payments/{id}', [PaymentsController::class, 'delete'])->name('payments.delete');
     Route::get('/recent-activities', [RecentActivityController::class, 'index'])->name('recent-activities.index');
+
+    Route::post('/notifications/{notification}/read', [AppNotificationReadController::class, 'store'])
+        ->name('user.notifications.read');
+    Route::post('/notifications/read-all', [AppNotificationReadController::class, 'storeAll'])
+        ->name('user.notifications.read-all');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

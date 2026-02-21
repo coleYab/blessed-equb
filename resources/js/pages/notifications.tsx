@@ -132,6 +132,7 @@ type ServerNotification = {
     desc: { en: string; am: string };
     time: string | null;
     urgent: boolean;
+    read?: boolean;
     link?: string | null;
 };
 
@@ -157,6 +158,10 @@ type PageProps = {
     notifications?: ServerNotification[];
 };
 
+function getCsrfToken(): string {
+    return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+}
+
 export default function Notifications({ notifications }: PageProps) {
     const language: Language = 'en';
     const t = TRANSLATIONS[language];
@@ -171,7 +176,7 @@ export default function Notifications({ notifications }: PageProps) {
             desc: n.desc,
             time: n.time ? new Date(n.time) : new Date(),
             urgent: n.urgent,
-            read: false,
+            read: n.read ?? false,
         }));
     });
 
@@ -191,8 +196,32 @@ export default function Notifications({ notifications }: PageProps) {
         return items.filter((n) => !n.read).length;
     }, [items]);
 
-    const markAllAsRead = (): void => {
+    const markAllAsRead = async (): Promise<void> => {
         setItems((prev) => prev.map((n) => ({ ...n, read: true })));
+
+        const token = getCsrfToken();
+        await fetch('/notifications/read-all', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                ...(token ? { 'X-CSRF-TOKEN': token } : {}),
+            },
+        }).catch(() => null);
+    };
+
+    const markOneAsRead = async (notificationId: string | number): Promise<void> => {
+        setItems((prev) =>
+            prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n)),
+        );
+
+        const token = getCsrfToken();
+        await fetch(`/notifications/${encodeURIComponent(String(notificationId))}/read`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                ...(token ? { 'X-CSRF-TOKEN': token } : {}),
+            },
+        }).catch(() => null);
     };
 
     const activitiesContainerRef = useRef<HTMLDivElement | null>(null);
@@ -425,15 +454,7 @@ export default function Notifications({ notifications }: PageProps) {
                                             <button
                                                 type="button"
                                                 key={note.id}
-                                                onClick={() =>
-                                                    setItems((prev) =>
-                                                        prev.map((n) =>
-                                                            n.id === note.id
-                                                                ? { ...n, read: true }
-                                                                : n,
-                                                        ),
-                                                    )
-                                                }
+                                                onClick={() => void markOneAsRead(note.id)}
                                                 className={`w-full border-b border-stone-100 p-5 text-left transition-colors hover:bg-stone-50 ${
                                                     note.urgent ? 'bg-amber-50/40' : ''
                                                 } ${!note.read ? 'bg-emerald-50/20' : ''}`}

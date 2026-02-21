@@ -54,6 +54,7 @@ type ServerNotification = {
     desc: { en: string; am: string };
     time: string | null;
     urgent: boolean;
+    read?: boolean;
     link?: string | null;
 };
 
@@ -75,7 +76,7 @@ export default function Dashboard() {
             desc: n.desc,
             time: n.time ? new Date(n.time) : new Date(),
             urgent: n.urgent,
-            read: false,
+            read: n.read ?? false,
         }));
     });
 
