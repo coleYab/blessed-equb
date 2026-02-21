@@ -11,6 +11,7 @@ class AppNotification extends Model
     protected $table = 'app_notifications';
 
     protected $fillable = [
+        'target_user_id',
         'title_en',
         'title_am',
         'message_en',

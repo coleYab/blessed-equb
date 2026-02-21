@@ -8,7 +8,7 @@ import type { BreadcrumbItem } from '@/types';
 import type { AppSettings, Language } from '@/types/app';
 
 // 1. Unified Status Types to match your backend/props
-type TicketStatus = 'AVAILABLE' | 'PENDING' | 'RESERVED' | 'VOID';
+type TicketStatus = 'AVAILABLE' | 'PENDING' | 'SOLD' | 'VOID';
 
 interface Ticket {
     id: number;
@@ -37,7 +37,7 @@ const TRANSLATIONS = {
         allTickets: 'All',
         activeTickets: 'Active',
         pendingTickets: 'Pending',
-        reservedTickets: 'Reserved',
+        reservedTickets: 'Sold',
         voidTickets: 'Void',
         table: {
             ticketNumber: 'Ticket #',
@@ -83,8 +83,8 @@ const statusStyles: Record<TicketStatus, { label: string; className: string; ico
         className: 'border-amber-200 bg-amber-50 text-amber-700',
         icon: <Clock className="h-4 w-4" />,
     },
-    RESERVED: {
-        label: 'RESERVED',
+    SOLD: {
+        label: 'SOLD',
         className: 'border-blue-200 bg-blue-50 text-blue-700',
         icon: <TicketIcon className="h-4 w-4" />,
     },
@@ -114,7 +114,7 @@ export default function Tickets({ tickets }: PageProps) {
                 }
                 return acc;
             },
-            { all: 0, AVAILABLE: 0, PENDING: 0, RESERVED: 0, VOID: 0 }
+            { all: 0, AVAILABLE: 0, PENDING: 0, SOLD: 0, VOID: 0 }
         );
     }, [tickets]);
 
@@ -139,7 +139,7 @@ export default function Tickets({ tickets }: PageProps) {
                     <StatCard label={t.allTickets} count={counts.all} color="stone" />
                     <StatCard label={t.activeTickets} count={counts.AVAILABLE} color="emerald" />
                     <StatCard label={t.pendingTickets} count={counts.PENDING} color="amber" />
-                    <StatCard label={t.reservedTickets} count={counts.RESERVED} color="blue" />
+                    <StatCard label={t.reservedTickets} count={counts.SOLD} color="blue" />
                     <StatCard label={t.voidTickets} count={counts.VOID} color="stone" />
                 </div>
 

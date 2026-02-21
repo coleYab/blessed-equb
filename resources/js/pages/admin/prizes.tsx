@@ -1,4 +1,4 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import {
     PartyPopper,
     Video,
@@ -63,9 +63,8 @@ export default function Settings() {
     const [recentWinners, setRecentWinners] = useState<Winner[]>(
         DEFAULT_SETTINGS.recentWinners || [],
     );
-    const [currentWinner, setCurrentWinner] = useState<
-        (typeof DEFAULT_SETTINGS)['currentWinner']
-    >(DEFAULT_SETTINGS.currentWinner || null);
+
+    const currentWinner = DEFAULT_SETTINGS.currentWinner;
 
     const [drawTicketSearch, setDrawTicketSearch] = useState('');
     const [ticketSearchError, setTicketSearchError] = useState<string | null>(null);
@@ -75,6 +74,7 @@ export default function Settings() {
     const [editingWinnerId, setEditingWinnerId] = useState<Winner['id'] | null>(null);
     const [confirmDeleteId, setConfirmDeleteId] = useState<Winner['id'] | null>(null);
     const [isBroadcastModalOpen, setIsBroadcastModalOpen] = useState(false);
+    const [broadcastPlace, setBroadcastPlace] = useState<1 | 2 | 3>(1);
 
     const handleSearchWinningTicket = () => {
         const normalized = drawTicketSearch.trim();
@@ -112,46 +112,42 @@ export default function Settings() {
         setIsBroadcastModalOpen(true);
     };
 
-    const applyBroadcastWinner = () => {
+    const applyBroadcastWinner = async () => {
         if (!foundWinningTicket) {
             return;
         }
 
-        const announcedAt = new Date().toISOString();
+        const token =
+            document
+                .querySelector('meta[name="csrf-token"]')
+                ?.getAttribute('content') ?? '';
 
-        setCurrentWinner({
-            userId: foundWinningTicket.userId,
-            userName: foundWinningTicket.userName,
-            ticketNumber: foundWinningTicket.ticketNumber,
-            prizeName: foundWinningTicket.prizeName,
-            announcedAt,
+        const res = await fetch('/admin/winners/announce', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                ...(token ? { 'X-CSRF-TOKEN': token } : {}),
+            },
+            body: JSON.stringify({
+                ticketNumber: foundWinningTicket.ticketNumber,
+                place: broadcastPlace,
+            }),
         });
 
-        setWinnerAnnouncementMode(true);
-        setRecentWinners((prev) => {
-            const maxId = prev.reduce((acc, winner) => {
-                const current = typeof winner.id === 'number' ? winner.id : Number(winner.id);
-                return Number.isFinite(current) ? Math.max(acc, current) : acc;
-            }, 0);
-
-            const newWinner: Winner = {
-                id: maxId + 1,
-                name: foundWinningTicket.userName,
-                nameAm: foundWinningTicket.userName,
-                prize: foundWinningTicket.prizeName,
-                prizeAm: foundWinningTicket.prizeName,
-                cycle: `Cycle ${foundWinningTicket.cycle}`,
-                cycleAm: `Cycle ${foundWinningTicket.cycle}`,
-                location: 'Addis Ababa',
-                locationAm: 'አዲስ አበባ',
-            };
-
-            return [newWinner, ...prev];
-        });
+        if (!res.ok) {
+            const payload = (await res.json().catch(() => null)) as
+                | { message?: string }
+                | null;
+            setTicketSearchError(payload?.message ?? 'Failed to announce winner.');
+            return;
+        }
 
         setIsBroadcastModalOpen(false);
         setFoundWinningTicket(null);
         setDrawTicketSearch('');
+
+        router.reload({ only: ['settings'] });
     };
 
     const handleSavePastWinner = async (e: FormEvent) => {
@@ -734,6 +730,35 @@ export default function Settings() {
                                         <p className="text-sm text-stone-700">
                                             Prize: {foundWinningTicket.prizeName}
                                         </p>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <p className="text-xs font-bold tracking-wider text-stone-600 uppercase">
+                                            Winner place
+                                        </p>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => setBroadcastPlace(1)}
+                                                className={`rounded-lg px-3 py-2 text-sm font-bold shadow ${broadcastPlace === 1 ? 'bg-emerald-900 text-white' : 'bg-white text-stone-700'}`}
+                                            >
+                                                1st
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setBroadcastPlace(2)}
+                                                className={`rounded-lg px-3 py-2 text-sm font-bold shadow ${broadcastPlace === 2 ? 'bg-emerald-900 text-white' : 'bg-white text-stone-700'}`}
+                                            >
+                                                2nd
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setBroadcastPlace(3)}
+                                                className={`rounded-lg px-3 py-2 text-sm font-bold shadow ${broadcastPlace === 3 ? 'bg-emerald-900 text-white' : 'bg-white text-stone-700'}`}
+                                            >
+                                                3rd
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
                                         <button

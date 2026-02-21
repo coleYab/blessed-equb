@@ -4,6 +4,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\AppSettingsController;
 use App\Http\Controllers\RecentActivityController;
+use App\Http\Controllers\Admin\WinnerController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -57,6 +58,9 @@ Route::get('admin/users', [AppSettingsController::class, 'user'])->middleware(['
 Route::get('admin/prize', [AppSettingsController::class, 'prize'])->middleware(['auth', 'verified'])->name('admin.prize');
 Route::get('admin/cycle', [AppSettingsController::class, 'cycle'])->middleware(['auth', 'verified'])->name('admin.cycle');
 Route::get('admin/dashboard', [AppSettingsController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('admin.dashboard');
+
+Route::post('admin/winners/announce', [WinnerController::class, 'announce'])
+    ->middleware(['auth', 'verified', 'is_admin']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/mypayments', [PaymentsController::class, 'mypayments'])->name('mypayments');

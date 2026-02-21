@@ -2,6 +2,7 @@
 
 use App\Models\Payments;
 use App\Models\RecentActivity;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -24,6 +25,11 @@ test('submitting a payment creates a payment submitted recent activity', functio
 
     $user = User::factory()->create();
 
+    Ticket::factory()->create([
+        'ticketNumber' => 12,
+        'status' => 'AVAILABLE',
+    ]);
+
     $this
         ->actingAs($user)
         ->post(route('payments.store'), [
@@ -45,6 +51,14 @@ test('admin approving a payment creates a payment approved recent activity for t
         'status' => 'PENDING',
     ]);
 
+    $ticket = Ticket::factory()->create([
+        'ticketNumber' => 12,
+        'status' => 'RESERVED',
+        'userId' => $user->id,
+        'paymentId' => $payment->id,
+        'reservedAt' => now(),
+    ]);
+
     $this
         ->actingAs($admin)
         ->put(route('payments.updateStatus', ['id' => $payment->id]), [
@@ -53,6 +67,9 @@ test('admin approving a payment creates a payment approved recent activity for t
         ->assertRedirect(route('admin.payments'));
 
     expect(RecentActivity::query()->where('userId', $user->id)->where('type', 'PAYMENT_APPROVED')->exists())->toBeTrue();
+
+    $ticket->refresh();
+    expect($ticket->status)->toBe('SOLD');
 });
 
 test('recent activities endpoint returns only the authenticated users activities', function () {

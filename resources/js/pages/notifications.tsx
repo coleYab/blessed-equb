@@ -12,7 +12,7 @@ import {
     UserPlus,
     XCircle,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { DEFAULT_SETTINGS } from '@/constants';
 import AppLayout from '@/layouts/app-layout';
@@ -109,6 +109,7 @@ const TRANSLATIONS = {
 type Language = keyof typeof TRANSLATIONS;
 
 type ActivityType =
+    | 'JOINED'
     | 'SUBSCRIBED'
     | 'BOUGHT_TICKET'
     | 'PAYMENT_SUBMITTED'
@@ -134,50 +135,10 @@ type ServerNotification = {
     link?: string | null;
 };
 
-const DEMO_ACTIVITIES: ActivityItem[] = [
-    {
-        id: 'act_001',
-        type: 'SUBSCRIBED',
-        title: {
-            en: 'Subscription activated',
-            am: 'መመዝገብ ተነቃቅቷል',
-        },
-        desc: {
-            en: 'Welcome! Your membership is active and you can start buying tickets.',
-            am: 'እንኳን ደህና መጡ! አባልነትዎ ንቁ ነው እና ቲኬቶችን መግዛት ይችላሉ።',
-        },
-        time: '2026-02-01 10:05',
-    },
-    {
-        id: 'act_002',
-        type: 'BOUGHT_TICKET',
-        title: {
-            en: 'Ticket purchased',
-            am: 'ቲኬት ተገዝቷል',
-        },
-        desc: {
-            en: 'You reserved ticket #12 for this cycle.',
-            am: 'ለዚህ ዙር ቲኬት #12 ተይዟል።',
-        },
-        time: '2026-02-10 14:22',
-        cycle: DEFAULT_SETTINGS.cycle,
-    },
-    {
-        id: 'act_003',
-        type: 'PAYMENT_SUBMITTED',
-        title: {
-            en: 'Payment submitted',
-            am: 'ክፍያ ተልኳል',
-        },
-        desc: {
-            en: 'Your payment receipt is under review.',
-            am: 'የክፍያ ደረሰኝዎ በመፈተሽ ላይ ነው።',
-        },
-        time: '2026-02-12 09:10',
-        link: 'https://example.com/receipt/txn_001',
-        cycle: DEFAULT_SETTINGS.cycle,
-    },
-];
+type ActivitiesResponse = {
+    data: ActivityItem[];
+    next_cursor: string | null;
+};
 
 function formatTime(value: Date): string {
     try {
@@ -197,7 +158,7 @@ type PageProps = {
 };
 
 export default function Notifications({ notifications }: PageProps) {
-    const [language, setLanguage] = useState<Language>('en');
+    const language: Language = 'en';
     const t = TRANSLATIONS[language];
 
     const [filter, setFilter] = useState<'ALL' | 'UNREAD' | 'URGENT'>('ALL');
@@ -234,17 +195,86 @@ export default function Notifications({ notifications }: PageProps) {
         setItems((prev) => prev.map((n) => ({ ...n, read: true })));
     };
 
-    const activities = useMemo(() => {
-        return [...DEMO_ACTIVITIES];
+    const activitiesContainerRef = useRef<HTMLDivElement | null>(null);
+    const [activities, setActivities] = useState<ActivityItem[]>([]);
+    const [activitiesNextCursor, setActivitiesNextCursor] = useState<string | null>(null);
+    const [activitiesLoading, setActivitiesLoading] = useState<boolean>(false);
+    const [activitiesBootstrapped, setActivitiesBootstrapped] = useState<boolean>(false);
+
+    const loadActivities = async (options?: { cursor?: string | null }): Promise<void> => {
+        if (activitiesLoading) {
+            return;
+        }
+
+        setActivitiesLoading(true);
+
+        try {
+            const params = new URLSearchParams();
+            params.set('limit', '10');
+
+            const cursor = options?.cursor;
+            if (cursor) {
+                params.set('cursor', cursor);
+            }
+
+            const response = await fetch(`/recent-activities?${params.toString()}`, {
+                headers: {
+                    Accept: 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                return;
+            }
+
+            const payload = (await response.json()) as ActivitiesResponse;
+
+            setActivities((prev) => {
+                const seen = new Set(prev.map((item) => item.id));
+                const incoming = payload.data.filter((item) => !seen.has(item.id));
+                return [...prev, ...incoming];
+            });
+            setActivitiesNextCursor(payload.next_cursor);
+            setActivitiesBootstrapped(true);
+        } finally {
+            setActivitiesLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        void loadActivities({ cursor: null });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const activityMeta: Record<
-        ActivityType,
-        {
-            icon: typeof Bell;
-            className: string;
+    const maybeLoadMoreActivities = (): void => {
+        const container = activitiesContainerRef.current;
+        if (!container) {
+            return;
         }
+
+        if (!activitiesNextCursor || activitiesLoading) {
+            return;
+        }
+
+        const remaining = container.scrollHeight - container.scrollTop - container.clientHeight;
+        if (remaining <= 40) {
+            void loadActivities({ cursor: activitiesNextCursor });
+        }
+    };
+
+    const activityMeta: Partial<
+        Record<
+            ActivityType,
+            {
+                icon: typeof Bell;
+                className: string;
+            }
+        >
     > = {
+        JOINED: {
+            icon: UserPlus,
+            className: 'border-emerald-200 bg-emerald-50 text-emerald-800',
+        },
         SUBSCRIBED: {
             icon: UserPlus,
             className: 'border-emerald-200 bg-emerald-50 text-emerald-800',
@@ -472,7 +502,7 @@ export default function Notifications({ notifications }: PageProps) {
                             </h2>
                         </div>
 
-                        {activities.length === 0 ? (
+                        {activities.length === 0 && activitiesBootstrapped ? (
                             <div className="p-10 text-center">
                                 <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-stone-100">
                                     <Calendar className="h-6 w-6 text-stone-500" />
@@ -485,10 +515,23 @@ export default function Notifications({ notifications }: PageProps) {
                                 </div>
                             </div>
                         ) : (
-                            <div className="p-5">
+                            <div
+                                ref={activitiesContainerRef}
+                                onScroll={maybeLoadMoreActivities}
+                                className="max-h-[520px] overflow-y-auto p-5"
+                            >
                                 <div className="space-y-4">
                                     {activities.map((act) => {
-                                        const meta = activityMeta[act.type];
+                                        const meta =
+                                            activityMeta[act.type] ??
+                                            ({
+                                                icon: Calendar,
+                                                className:
+                                                    'border-stone-200 bg-stone-50 text-stone-700',
+                                            } satisfies {
+                                                icon: typeof Bell;
+                                                className: string;
+                                            });
                                         const Icon = meta.icon;
 
                                         return (
@@ -519,7 +562,7 @@ export default function Notifications({ notifications }: PageProps) {
                                                                 <div className="mt-3 flex flex-wrap items-center gap-2">
                                                                     <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1 text-[10px] font-black tracking-wider text-stone-600 uppercase">
                                                                         <Clock className="h-3 w-3" />
-                                                                        {act.time}
+                                                                        {formatTime(new Date(act.time))}
                                                                     </span>
                                                                     {typeof act.cycle === 'number' ? (
                                                                         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-black tracking-wider text-emerald-700 uppercase">
@@ -547,6 +590,12 @@ export default function Notifications({ notifications }: PageProps) {
                                         );
                                     })}
                                 </div>
+
+                                {activitiesLoading ? (
+                                    <div className="py-4 text-center text-xs font-bold text-stone-500">
+                                        Loading...
+                                    </div>
+                                ) : null}
                             </div>
                         )}
                     </div>

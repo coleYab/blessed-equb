@@ -414,6 +414,38 @@ export default function Dashboard() {
                             </div>
                         </div>
 
+                        {settings.recentWinners && settings.recentWinners.length > 0 && (
+                            <div className="animate-fade-in-down mb-8">
+                                <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+                                    <div className="mb-4 flex items-center justify-between">
+                                        <h2 className="flex items-center text-lg font-bold text-stone-800">
+                                            <Trophy className="mr-2 h-5 w-5 text-amber-500" />
+                                            Recent Winners
+                                        </h2>
+                                    </div>
+
+                                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                        {settings.recentWinners.slice(0, 6).map((winner) => (
+                                            <div
+                                                key={winner.id}
+                                                className="rounded-xl border border-stone-100 bg-stone-50 p-4"
+                                            >
+                                                <div className="mb-2 text-xs font-bold tracking-wider text-stone-500 uppercase">
+                                                    {winner.cycle}
+                                                </div>
+                                                <div className="text-base font-bold text-stone-800">
+                                                    {winner.name}
+                                                </div>
+                                                <div className="mt-1 text-sm font-semibold text-emerald-800">
+                                                    {winner.prize}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Live Stream Section */}
                         {settings.isLive && (
                             <div className="animate-fade-in-down mb-8">

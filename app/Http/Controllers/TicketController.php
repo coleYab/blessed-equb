@@ -34,6 +34,10 @@ class TicketController extends Controller
             ->get(['id', 'ticketNumber', 'status', 'reservedAt', 'paymentId']);
 
         $notifications = AppNotification::query()
+            ->where(function ($query) use ($user): void {
+                $query->whereNull('target_user_id');
+                $query->orWhere('target_user_id', $user->id);
+            })
             ->latest('sent_at')
             ->latest('created_at')
             ->limit(10)
@@ -280,7 +284,15 @@ class TicketController extends Controller
 
     public function notifications(): Response
     {
+        $user = Auth::user();
+
         $notifications = AppNotification::query()
+            ->when($user, function ($query) use ($user): void {
+                $query->where(function ($query) use ($user): void {
+                    $query->whereNull('target_user_id');
+                    $query->orWhere('target_user_id', $user->id);
+                });
+            })
             ->latest('sent_at')
             ->latest('created_at')
             ->get()

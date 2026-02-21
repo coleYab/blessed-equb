@@ -17,6 +17,7 @@ class AppNotificationFactory extends Factory
     public function definition(): array
     {
         return [
+            'target_user_id' => null,
             'title_en' => fake()->sentence(3),
             'title_am' => null,
             'message_en' => fake()->paragraph(),

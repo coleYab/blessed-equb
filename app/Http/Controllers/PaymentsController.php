@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payments;
+use App\Models\Ticket;
 use App\Models\RecentActivity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class PaymentsController extends Controller
 {
@@ -56,14 +59,44 @@ class PaymentsController extends Controller
         $path = $request->file('receipt')->store('receipts', 'public');
 
         $user = Auth::user();
-        $payment = Payments::create([
-            'userId' => $user->id,
-            'userName' => $user->name,
-            'userPhone' => $user->phoneNumber ?? '',
-            'amount' => $request->amount,
-            'receiptUrl' => '/storage/' . $path,
-            'requestedTicket' => $request->requestedTicket,
-        ]);
+        $receiptUrl = '/storage/' . $path;
+
+        try {
+            $payment = DB::transaction(function () use ($request, $user, $receiptUrl) {
+                $payment = Payments::create([
+                    'userId' => $user->id,
+                    'userName' => $user->name,
+                    'userPhone' => $user->phoneNumber ?? '',
+                    'amount' => $request->amount,
+                    'receiptUrl' => $receiptUrl,
+                    'requestedTicket' => $request->requestedTicket,
+                ]);
+
+                $ticket = Ticket::query()
+                    ->where('ticketNumber', (int) $request->requestedTicket)
+                    ->where('status', 'AVAILABLE')
+                    ->lockForUpdate()
+                    ->first();
+
+                if (! $ticket) {
+                    throw ValidationException::withMessages([
+                        'requestedTicket' => 'This ticket number is not available.',
+                    ]);
+                }
+
+                $ticket->update([
+                    'userId' => $user->id,
+                    'paymentId' => $payment->id,
+                    'reservedAt' => now(),
+                    'status' => 'RESERVED',
+                ]);
+
+                return $payment;
+            });
+        } catch (\Throwable $e) {
+            Storage::disk('public')->delete($path);
+            throw $e;
+        }
 
         RecentActivity::query()->create([
             'userId' => $user->id,
@@ -136,8 +169,32 @@ class PaymentsController extends Controller
             return back()->with('error', 'Status cannot be changed.');
         }
 
-        $payment->status = $request->status;
-        $payment->save();
+        DB::transaction(function () use ($payment, $request) {
+            $payment->status = $request->status;
+            $payment->save();
+
+            $ticket = Ticket::query()
+                ->where('paymentId', $payment->id)
+                ->lockForUpdate()
+                ->first();
+
+            if (! $ticket) {
+                return;
+            }
+
+            if ($payment->status === 'APPROVED') {
+                $ticket->update([
+                    'status' => 'SOLD',
+                ]);
+            } else {
+                $ticket->update([
+                    'userId' => null,
+                    'paymentId' => null,
+                    'reservedAt' => null,
+                    'status' => 'AVAILABLE',
+                ]);
+            }
+        });
 
         RecentActivity::query()->create([
             'userId' => $payment->userId,
@@ -174,9 +231,25 @@ class PaymentsController extends Controller
             return back()->with('error', 'You cannot delete this payment.');
         }
 
-        Storage::disk('public')->delete(str_replace('/storage/', '', $payment->receiptUrl));
+        DB::transaction(function () use ($payment) {
+            $ticket = Ticket::query()
+                ->where('paymentId', $payment->id)
+                ->lockForUpdate()
+                ->first();
 
-        $payment->delete();
+            if ($ticket) {
+                $ticket->update([
+                    'userId' => null,
+                    'paymentId' => null,
+                    'reservedAt' => null,
+                    'status' => 'AVAILABLE',
+                ]);
+            }
+
+            $payment->delete();
+        });
+
+        Storage::disk('public')->delete(str_replace('/storage/', '', $payment->receiptUrl));
 
         return redirect()->route('mypayments')->with('success', 'Payment deleted successfully.');
     }
