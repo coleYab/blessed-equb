@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('userId')->nullable()->constrained('users')->onDelete('set null');
 
             // Related payment (nullable)
-            $table->foreignId('paymentId') ->nullable() ->constrained('payments') ->onDelete('set null');
+            $table->foreignId('paymentId')->nullable();
 
             // Ticket status
             $table->enum('status', [ 'AVAILABLE', 'RESERVED', 'SOLD' ])->default('AVAILABLE');
