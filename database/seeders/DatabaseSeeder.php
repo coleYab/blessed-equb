@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Payments;
 use App\Models\RecentActivity;
 use App\Models\Ticket;
+use App\Models\AppSetting;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,7 +17,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create 5000 tickets
-        /*
         for ($i = 1; $i <= 5000; $i++) {
             Ticket::create([
                 'ticketNumber' => $i,
@@ -25,8 +25,38 @@ class DatabaseSeeder extends Seeder
                 'paymentId' => null,
             ]);
         }
-        /*/
-        $user = User::first();
+
+         AppSetting::create([
+            'cycle' => 1,
+            'days_remaining' => 7,
+            'draw_date' => now()->addDays(7),
+
+            'prize_name' => 'Toyota Land Cruiser 2024',
+            'prize_value' => '85,000 USD',
+            'prize_image' => 'prizes/landcruiser-main.jpg',
+            'prize_images' => [
+                'prizes/landcruiser-1.jpg',
+                'prizes/landcruiser-2.jpg',
+                'prizes/landcruiser-3.jpg',
+            ],
+
+            'live_stream_url' => 'https://youtube.com/live/example',
+
+            'is_live' => false,
+            'registration_enabled' => true,
+            'ticket_selection_enabled' => true,
+            'winner_announcement_mode' => false,
+
+            'next_draw_date_en' => 'March 15, 2026',
+            'next_draw_date_am' => 'መጋቢት 6, 2026',
+
+            'pot_value' => 5000000,
+            'total_members' => 12500,
+            'cars_delivered' => 32,
+            'trust_score' => 98,
+        ]);
+        
+        // $user = User::first();
         /*
 
         // Create 10 payment requests and assign each to a random ticket
@@ -53,8 +83,8 @@ class DatabaseSeeder extends Seeder
         }
 
         */
-        RecentActivity::factory()->count(10)->create([
-            'userId' => $user->id
-        ]);
+        // RecentActivity::factory()->count(10)->create([
+        //     'userId' => $user->id
+        // ]);
     }
 }

@@ -29,11 +29,15 @@ class AdminSettingsUpdateRequest extends FormRequest
             'prizeName' => ['required', 'string', 'max:255'],
             'prizeValue' => ['required', 'string', 'max:255'],
             'prizeImage' => ['nullable', 'string', 'url', 'max:2048'],
+            'prizeImages' => ['nullable', 'array'],
+            'prizeImages.*' => ['string', 'url', 'max:2048'],
             'liveStreamUrl' => ['nullable', 'string', 'url', 'max:2048'],
             'isLive' => ['required', 'boolean'],
             'registrationEnabled' => ['required', 'boolean'],
             'ticketSelectionEnabled' => ['required', 'boolean'],
             'winnerAnnouncementMode' => ['required', 'boolean'],
+            'nextDrawDateEn' => ['nullable', 'string', 'max:255'],
+            'nextDrawDateAm' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

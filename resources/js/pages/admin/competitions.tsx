@@ -1,8 +1,9 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { Calendar, Plus, Save, Ticket, Trophy,  X } from 'lucide-react';
 import { useState } from 'react';
 import { ADMIN_TRANSLATIONS, PRIZE_IMAGES } from '@/constants';
 import AppLayout from '@/layouts/app-layout';
+import { update as updateSettings } from '@/routes/admin/settings';
 import type { BreadcrumbItem } from '@/types';
 import type {  AppSettings } from '@/types/app';
 
@@ -95,6 +96,52 @@ export default function Competition({ tickets } : PageProps) {
 
 
     const t = ADMIN_TRANSLATIONS['en']
+
+    const saveSettings = (section: 'Draw Schedule' | 'Current Prize'): void => {
+        router.put(
+            updateSettings().url,
+            {
+                cycle: localSettings.cycle,
+                daysRemaining: localSettings.daysRemaining,
+                drawDate: localSettings.drawDate,
+                prizeName: localSettings.prizeName,
+                prizeValue: localSettings.prizeValue,
+                prizeImage: localSettings.prizeImage ?? '',
+                prizeImages: localSettings.prizeImages ?? [],
+                liveStreamUrl: localSettings.liveStreamUrl ?? '',
+                isLive: localSettings.isLive,
+                registrationEnabled: localSettings.registrationEnabled,
+                ticketSelectionEnabled: localSettings.ticketSelectionEnabled,
+                winnerAnnouncementMode: localSettings.winnerAnnouncementMode,
+                nextDrawDateEn: localSettings.nextDrawDateEn ?? '',
+                nextDrawDateAm: localSettings.nextDrawDateAm ?? '',
+            },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    showAlert('Saved', `${section} saved successfully.`);
+                },
+                onError: () => {
+                    showAlert('Save failed', 'Please check the form values and try again.');
+                },
+            },
+        );
+    };
+
+    const handleAddImage = (): void => {
+        const trimmed = newImageUrl.trim();
+
+        if (trimmed === '') {
+            return;
+        }
+
+        setLocalSettings((prev) => ({
+            ...prev,
+            prizeImages: [...(prev.prizeImages ?? []), trimmed],
+        }));
+        setNewImageUrl('');
+    };
+
     const handleExportTickets = () => {
         const headers = 'Ticket ID,Lucky Number,User ID,Cycle\n';
         const rows = tickets.map((t)=>`${t.id},${t.ticketNumber},"${t.userId}",${1}`).join('\n');
@@ -245,9 +292,7 @@ export default function Competition({ tickets } : PageProps) {
                                 </div>
                                 <div className="mt-6 flex justify-end border-t border-stone-100 pt-4">
                                     <button
-                                        onClick={() => {}
-                                            // handleSaveSection('Draw Schedule')
-                                        }
+                                        onClick={() => saveSettings('Draw Schedule')}
                                         className="flex items-center rounded-lg bg-emerald-900 px-4 py-2 font-bold text-white shadow transition-colors hover:bg-emerald-800"
                                     >
                                         <Save className="mr-2 h-4 w-4" />{' '}
@@ -270,7 +315,12 @@ export default function Competition({ tickets } : PageProps) {
                                             <input
                                                 type="text"
                                                 value={localSettings.prizeName}
-                                                onChange={(e) => {}}
+                                                onChange={(e) =>
+                                                    setLocalSettings((prev) => ({
+                                                        ...prev,
+                                                        prizeName: e.target.value,
+                                                    }))
+                                                }
                                                 className="w-full rounded-lg border border-stone-300 p-2"
                                             />
                                         </div>
@@ -302,11 +352,15 @@ export default function Competition({ tickets } : PageProps) {
                                                 <input
                                                     type="text"
                                                     value={newImageUrl}
-                                                    onChange={(e) => {}}
+                                                    onChange={(e) =>
+                                                        setNewImageUrl(e.target.value)
+                                                    }
                                                     placeholder="Image URL"
                                                     className="flex-1 rounded-lg border border-stone-300 p-2 text-sm"
                                                 />
                                                 <button
+                                                    type="button"
+                                                    onClick={handleAddImage}
                                                     className="rounded-lg bg-stone-800 px-4 text-white"
                                                 >
                                                     <Plus className="h-4 w-4" />
@@ -361,9 +415,7 @@ export default function Competition({ tickets } : PageProps) {
                                 </div>
                                 <div className="mt-6 flex justify-end border-t border-stone-100 pt-4">
                                     <button
-                                        onClick={() => {}
-                                            // handleSaveSection('Current Prize')
-                                        }
+                                        onClick={() => saveSettings('Current Prize')}
                                         className="flex items-center rounded-lg bg-emerald-900 px-4 py-2 font-bold text-white shadow transition-colors hover:bg-emerald-800"
                                     >
                                         <Save className="mr-2 h-4 w-4" />{' '}

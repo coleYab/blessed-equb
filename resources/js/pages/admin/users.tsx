@@ -1,15 +1,16 @@
-import { Head } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import {
     Ban,
     CheckCircle,
     Clock,
-    Edit,
     Plus,
     Search,
     Trash2,
     UserX,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { usersStore } from '@/actions/App/Http/Controllers/AppSettingsController';
+import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -38,6 +39,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 import { ADMIN_TRANSLATIONS } from '@/constants';
 import AppLayout from '@/layouts/app-layout';
 import { settings as appSettings } from '@/routes/admin';
@@ -54,69 +56,35 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 type UserRow = User & {
     banned: boolean;
+    email?: string;
 };
 
 interface PageProps {
     users: UserRow[];
+    status?: string;
+    [key: string]: unknown;
 }
 
 export default function Users({
     users
 }: PageProps) {
+    const { status } = usePage<PageProps>().props;
     const language: Language = 'en';
     const t = ADMIN_TRANSLATIONS[language];
-
-    const demoUsers: UserRow[] = useMemo(() => {
-        return [
-            {
-                id: 1,
-                name: 'Rahul Sharma',
-                phone: '+251 911 000 001',
-                status: 'VERIFIED',
-                contribution: 5000,
-                prizeNumber: 12,
-                joinedDate: '2026-02-01',
-                banned: false,
-            },
-            {
-                id: 2,
-                name: 'Sara Tadesse',
-                phone: '+251 911 000 002',
-                status: 'VERIFIED',
-                contribution: 5000,
-                joinedDate: '2026-02-03',
-                banned: false,
-            },
-            {
-                id: 3,
-                name: 'Dawit Mekonnen',
-                phone: '+251 911 000 003',
-                status: 'VERIFIED',
-                contribution: 10000,
-                prizeNumber: 7,
-                joinedDate: '2026-02-06',
-                banned: true,
-            },
-            {
-                id: 4,
-                name: 'Hana Tesfaye',
-                phone: '+251 911 000 004',
-                status: 'VERIFIED',
-                contribution: 25000,
-                joinedDate: '2026-02-08',
-                banned: false,
-            },
-        ];
-    }, []);
 
     const [tab, setTab] = useState<'ALL' | 'VERIFIED' | 'PENDING' | 'BANNED'>('ALL');
     const [searchTerm, setSearchTerm] = useState('');
 
     const [userDialogOpen, setUserDialogOpen] = useState(false);
-    const [editingUser, setEditingUser] = useState<Partial<UserRow>>({
-        status: 'PENDING',
-        contribution: 0,
-        banned: false,
+
+    const { data, setData, post, processing, errors, reset, clearErrors, transform } = useForm({
+        name: '',
+        email: '',
+        phone: '',
+        status: 'PENDING' as UserRow['status'],
+        joinedDate: new Date().toISOString().slice(0, 10),
+        ticketNumbersInput: '',
+        ticketNumbers: [] as number[],
     });
 
     const [confirmOpen, setConfirmOpen] = useState(false);
@@ -166,69 +134,46 @@ export default function Users({
     }, [users]);
 
     const openAddUser = () => {
-        setEditingUser({
+        clearErrors();
+        reset();
+        setData({
             name: '',
+            email: '',
             phone: '',
             status: 'PENDING',
-            contribution: 0,
-            prizeNumber: undefined,
             joinedDate: new Date().toISOString().slice(0, 10),
-            banned: false,
         });
-        setUserDialogOpen(true);
-    };
-
-    const openEditUser = (user: UserRow) => {
-        setEditingUser({ ...user });
         setUserDialogOpen(true);
     };
 
     const saveUser = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!editingUser.name || !editingUser.phone) {
+        if (!data.name || !data.email || !data.phone) {
             return;
         }
 
-        setUsers((prev) => {
-            if (editingUser.id) {
-                return prev.map((u) => {
-                    if (u.id !== editingUser.id) {
-                        return u;
-                    }
+        const ticketNumbers = String(data.ticketNumbersInput ?? '')
+            .split(/[\s,]+/)
+            .map((value) => value.trim())
+            .filter(Boolean)
+            .map((value) => Number(value))
+            .filter((value) => Number.isFinite(value) && value > 0);
 
-                    return {
-                        ...u,
-                        name: editingUser.name ?? u.name,
-                        phone: editingUser.phone ?? u.phone,
-                        status: (editingUser.status as UserRow['status']) ?? u.status,
-                        contribution: editingUser.contribution ?? u.contribution,
-                        prizeNumber: editingUser.prizeNumber,
-                        joinedDate: editingUser.joinedDate ?? u.joinedDate,
-                    };
-                });
-            }
+        transform((formData) => ({
+            ...formData,
+            ticketNumbers,
+        }));
 
-            const maxId = prev.reduce((acc, u) => {
-                const id = typeof u.id === 'number' ? u.id : 0;
-                return Math.max(acc, id);
-            }, 0);
-
-            const newUser: UserRow = {
-                id: maxId + 1,
-                name: editingUser.name,
-                phone: editingUser.phone,
-                status: (editingUser.status as UserRow['status']) ?? 'PENDING',
-                contribution: editingUser.contribution ?? 0,
-                prizeNumber: editingUser.prizeNumber,
-                joinedDate: editingUser.joinedDate ?? new Date().toISOString().slice(0, 10),
-                banned: false,
-            };
-
-            return [newUser, ...prev];
+        post(usersStore.url(), {
+            preserveScroll: true,
+            onSuccess: () => {
+                setUserDialogOpen(false);
+            },
+            onFinish: () => {
+                transform((formData) => formData);
+            },
         });
-
-        setUserDialogOpen(false);
     };
 
     const openConfirm = (type: 'DELETE' | 'BAN' | 'UNBAN', user: UserRow) => {
@@ -266,7 +211,11 @@ export default function Users({
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                         <div>
                             <h1 className="text-2xl font-bold text-stone-800">{t.users.title}</h1>
-                            <p className="text-sm text-stone-500">This page is running in demo mode.</p>
+                            {status ? (
+                                <p className="text-sm text-emerald-600">{status}</p>
+                            ) : (
+                                <p className="text-sm text-stone-500">Manage users and send them password setup emails.</p>
+                            )}
                         </div>
 
                         <div className="grid grid-cols-4 gap-2 sm:flex sm:gap-3">
@@ -433,15 +382,6 @@ export default function Users({
                                                         </div>
                                                     </CardContent>
                                                     <CardFooter className="flex flex-col gap-2 border-t bg-white p-4">
-                                                        <Button
-                                                            variant="outline"
-                                                            className="w-full rounded-xl"
-                                                            onClick={() => openEditUser(user)}
-                                                        >
-                                                            <Edit className="mr-2 h-4 w-4" />
-                                                            Edit user
-                                                        </Button>
-
                                                         {user.banned ? (
                                                             <Button
                                                                 variant="secondary"
@@ -483,10 +423,10 @@ export default function Users({
                         <DialogContent className="sm:max-w-lg">
                             <DialogHeader>
                                 <DialogTitle>
-                                    {editingUser.id ? 'Edit user' : t.users.addNew}
+                                    {t.users.addNew}
                                 </DialogTitle>
                                 <DialogDescription>
-                                    Update details in demo mode. No backend integration.
+                                    Create a new user and email them a password setup link.
                                 </DialogDescription>
                             </DialogHeader>
 
@@ -496,67 +436,51 @@ export default function Users({
                                         <Label htmlFor="user-name">Full name</Label>
                                         <Input
                                             id="user-name"
-                                            value={editingUser.name ?? ''}
-                                            onChange={(e) => setEditingUser((prev) => ({ ...prev, name: e.target.value }))}
+                                            value={data.name}
+                                            onChange={(e) => setData('name', e.target.value)}
                                             className="rounded-xl"
                                             required
                                         />
+                                        <InputError message={errors.name} />
+                                    </div>
+
+                                    <div className="space-y-2 sm:col-span-2">
+                                        <Label htmlFor="user-email">Email</Label>
+                                        <Input
+                                            id="user-email"
+                                            type="email"
+                                            value={data.email}
+                                            onChange={(e) => setData('email', e.target.value)}
+                                            className="rounded-xl"
+                                            required
+                                        />
+                                        <InputError message={errors.email} />
                                     </div>
 
                                     <div className="space-y-2">
                                         <Label htmlFor="user-phone">{t.users.phone}</Label>
                                         <Input
                                             id="user-phone"
-                                            value={editingUser.phone ?? ''}
-                                            onChange={(e) => setEditingUser((prev) => ({ ...prev, phone: e.target.value }))}
+                                            value={data.phone}
+                                            onChange={(e) => setData('phone', e.target.value)}
                                             className="rounded-xl"
                                             required
                                         />
+                                        <InputError message={errors.phone} />
                                     </div>
 
                                     <div className="space-y-2">
                                         <Label htmlFor="user-status">{t.users.status}</Label>
                                         <select
                                             id="user-status"
-                                            value={(editingUser.status as UserRow['status']) ?? 'PENDING'}
-                                            onChange={(e) => setEditingUser((prev) => ({ ...prev, status: e.target.value as UserRow['status'] }))}
+                                            value={data.status}
+                                            onChange={(e) => setData('status', e.target.value as UserRow['status'])}
                                             className="h-11 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium shadow-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
                                         >
                                             <option value="PENDING">{t.users.pending}</option>
                                             <option value="VERIFIED">{t.users.verified}</option>
                                         </select>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label htmlFor="user-contribution">Total contribution (ETB)</Label>
-                                        <Input
-                                            id="user-contribution"
-                                            type="number"
-                                            value={editingUser.contribution ?? 0}
-                                            onChange={(e) =>
-                                                setEditingUser((prev) => ({
-                                                    ...prev,
-                                                    contribution: Number.parseInt(e.target.value || '0', 10) || 0,
-                                                }))
-                                            }
-                                            className="rounded-xl"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label htmlFor="user-ticket">Ticket number (optional)</Label>
-                                        <Input
-                                            id="user-ticket"
-                                            type="number"
-                                            value={editingUser.prizeNumber ?? ''}
-                                            onChange={(e) =>
-                                                setEditingUser((prev) => ({
-                                                    ...prev,
-                                                    prizeNumber: e.target.value ? Number.parseInt(e.target.value, 10) : undefined,
-                                                }))
-                                            }
-                                            className="rounded-xl"
-                                        />
+                                        <InputError message={errors.status} />
                                     </div>
 
                                     <div className="space-y-2">
@@ -564,10 +488,23 @@ export default function Users({
                                         <Input
                                             id="user-joined"
                                             type="date"
-                                            value={editingUser.joinedDate ?? ''}
-                                            onChange={(e) => setEditingUser((prev) => ({ ...prev, joinedDate: e.target.value }))}
+                                            value={data.joinedDate}
+                                            onChange={(e) => setData('joinedDate', e.target.value)}
                                             className="rounded-xl"
                                         />
+                                        <InputError message={errors.joinedDate} />
+                                    </div>
+
+                                    <div className="space-y-2 sm:col-span-2">
+                                        <Label htmlFor="user-ticket-numbers">Ticket numbers</Label>
+                                        <Textarea
+                                            id="user-ticket-numbers"
+                                            value={data.ticketNumbersInput}
+                                            onChange={(e) => setData('ticketNumbersInput', e.target.value)}
+                                            className="rounded-xl"
+                                            placeholder="e.g. 12, 45, 78 (comma or new line separated)"
+                                        />
+                                        <InputError message={errors.ticketNumbers} />
                                     </div>
                                 </div>
 
@@ -581,7 +518,7 @@ export default function Users({
                                         Cancel
                                     </Button>
                                     <Button type="submit" className="rounded-xl bg-emerald-600 text-white hover:bg-emerald-500">
-                                        Save
+                                        {processing ? 'Saving...' : 'Save'}
                                     </Button>
                                 </div>
                             </form>

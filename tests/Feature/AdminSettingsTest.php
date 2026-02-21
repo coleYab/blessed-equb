@@ -32,6 +32,12 @@ test('admin settings can be updated', function () {
             'prizeName' => 'Test Prize',
             'prizeValue' => 'ETB 5M',
             'prizeImage' => 'https://example.com/prize.jpg',
+            'prizeImages' => [
+                'https://example.com/prize-1.jpg',
+                'https://example.com/prize-2.jpg',
+            ],
+            'nextDrawDateEn' => 'Meskerem 1, 2026',
+            'nextDrawDateAm' => '2026/1/1',
             'liveStreamUrl' => 'https://youtube.com/watch?v=test',
             'isLive' => true,
             'registrationEnabled' => false,
@@ -47,9 +53,15 @@ test('admin settings can be updated', function () {
     $settings = AppSetting::query()->firstOrFail();
     expect($settings->cycle)->toBe(2);
     expect($settings->days_remaining)->toBe(7);
-    expect($settings->draw_date->format('Y-m-d'))->toBe('2026-03-15');
+    expect(substr((string) $settings->getRawOriginal('draw_date'), 0, 10))->toBe('2026-03-15');
     expect($settings->prize_name)->toBe('Test Prize');
     expect($settings->prize_value)->toBe('ETB 5M');
+    expect($settings->prize_images)->toBe([
+        'https://example.com/prize-1.jpg',
+        'https://example.com/prize-2.jpg',
+    ]);
+    expect($settings->next_draw_date_en)->toBe('Meskerem 1, 2026');
+    expect($settings->next_draw_date_am)->toBe('2026/1/1');
     expect($settings->is_live)->toBeTrue();
     expect($settings->registration_enabled)->toBeFalse();
     expect($settings->ticket_selection_enabled)->toBeFalse();

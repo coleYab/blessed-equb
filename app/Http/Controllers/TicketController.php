@@ -173,11 +173,11 @@ class TicketController extends Controller
     // Show tickets for the logged-in user
     public function tickets() : Response
     {
-        // $tickets = Ticket::where('userId', Auth::id())
-        //     ->latest
-            // ->get();
+        $tickets = Ticket::where('userId', Auth::user()->id)
+            ->latest()
+            ->get();
 
-        $tickets = Ticket::take(10)->get();
+        // $tickets = Ticket::take(10)->get();
 
         return Inertia::render('tickets', [
             'tickets' => $tickets,

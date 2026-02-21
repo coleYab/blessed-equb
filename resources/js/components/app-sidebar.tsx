@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { Banknote, Bell, DollarSign, Gift, LayoutGrid, Settings, Ticket, Trophy, Users, UsersRoundIcon } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -111,9 +111,10 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-               {/* { true || auth.user.is_admin && */}
+                {usePage().props.auth.user.is_admin ?                
                     <NavFooter items={footerNavItems} className="mt-auto" />
-                {/* } */}
+                    : null 
+                }
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

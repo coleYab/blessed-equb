@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Admin\AdminSettingsUpdateRequest;
+use App\Http\Requests\Admin\AdminUserStoreRequest;
 use App\Http\Requests\Admin\AdminNotificationStoreRequest;
 use App\Models\AppNotification;
 use App\Models\AppSetting;
@@ -12,6 +13,8 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -34,11 +37,14 @@ class AppSettingsController extends Controller
             'prize_name' => $data['prizeName'],
             'prize_value' => $data['prizeValue'],
             'prize_image' => $data['prizeImage'] ?: null,
+            'prize_images' => $data['prizeImages'] ?? null,
             'live_stream_url' => $data['liveStreamUrl'] ?: null,
             'is_live' => $data['isLive'],
             'registration_enabled' => $data['registrationEnabled'],
             'ticket_selection_enabled' => $data['ticketSelectionEnabled'],
             'winner_announcement_mode' => $data['winnerAnnouncementMode'],
+            'next_draw_date_en' => $data['nextDrawDateEn'] ?? null,
+            'next_draw_date_am' => $data['nextDrawDateAm'] ?? null,
         ]);
 
         Cache::forget('app_settings');
@@ -70,6 +76,7 @@ class AppSettingsController extends Controller
             return [
                 'id' => $user->id,
                 'name' => $user->name,
+                'email' => $user->email,
                 'phone' => $user->phoneNumber,
                 'status' => $user->email_verified_at ? 'VERIFIED' : 'PENDING',
                 'contribution' => $contributions[$user->id] ?? 0,
@@ -82,6 +89,54 @@ class AppSettingsController extends Controller
         return Inertia::render('admin/users', [
             'users' => $users,
         ]);
+    }
+
+    public function usersStore(AdminUserStoreRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+
+        $user = DB::transaction(function () use ($data): User {
+            $user = User::query()->create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'phoneNumber' => $data['phone'],
+                'password' => Str::random(32),
+            ]);
+
+            if (($data['status'] ?? 'PENDING') === 'VERIFIED') {
+                $user->forceFill([
+                    'email_verified_at' => now(),
+                ])->save();
+            }
+
+            $ticketNumbers = $data['ticketNumbers'] ?? [];
+
+            if (is_array($ticketNumbers) && $ticketNumbers !== []) {
+                $tickets = Ticket::query()
+                    ->whereIn('ticketNumber', $ticketNumbers)
+                    ->lockForUpdate()
+                    ->get();
+
+                foreach ($tickets as $ticket) {
+                    $ticket->forceFill([
+                        'userId' => $user->id,
+                        'paymentId' => null,
+                        'reservedAt' => null,
+                        'status' => 'SOLD',
+                    ])->save();
+                }
+            }
+
+            return $user;
+        });
+
+        Password::broker(config('fortify.passwords'))->sendResetLink([
+            'email' => $user->email,
+        ]);
+
+        return redirect()
+            ->route('admin.users')
+            ->with('status', 'User created and password setup email sent.');
     }
     public function dashboard() {
         $payments = Payments::query()->take(4)->get();
@@ -112,7 +167,8 @@ class AppSettingsController extends Controller
     }
 
     public function cycle() {
-        $tickets = Ticket::take(10)->get();
+        // $tickets = Ticket::take(10)->get();
+        $tickets = Ticket::query()->orderBy('ticketNumber', 'asc')->where('status', 'SOLD')->get();
         return Inertia::render('admin/competitions', [
             'tickets' => $tickets,
         ]);
