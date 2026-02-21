@@ -5,7 +5,7 @@ use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
 test('admin notifications page is displayed', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create(['is_admin' => true]);
 
     AppNotification::factory()->create([
         'title_en' => 'Test Notification',
@@ -26,7 +26,7 @@ test('admin notifications page is displayed', function () {
 });
 
 test('admin can create a notification broadcast', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create(['is_admin' => true]);
 
     $response = $this
         ->actingAs($user)
@@ -51,7 +51,7 @@ test('admin can create a notification broadcast', function () {
 });
 
 test('notification broadcast validation works', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create(['is_admin' => true]);
 
     $response = $this
         ->actingAs($user)
@@ -62,6 +62,22 @@ test('notification broadcast validation works', function () {
         ]);
 
     $response->assertSessionHasErrors(['title_en', 'message_en', 'is_urgent']);
+});
+
+test('non-admin authenticated users cannot access admin notifications', function () {
+    $user = User::factory()->create(['is_admin' => false]);
+
+    $this->actingAs($user)
+        ->get(route('admin.notifications'))
+        ->assertForbidden();
+
+    $this->actingAs($user)
+        ->post(route('admin.notifications.store'), [
+            'title_en' => 'Test',
+            'message_en' => 'Test',
+            'is_urgent' => false,
+        ])
+        ->assertForbidden();
 });
 
 test('guests cannot access admin notifications', function () {

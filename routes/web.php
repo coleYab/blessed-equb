@@ -50,18 +50,25 @@ Route::get('tickets/check-availability', [TicketController::class, 'checkAvailab
     ->name('tickets.check-availability');
 
 // this are admin routes
-Route::get('admin/settings', [AppSettingsController::class, 'index'])->middleware(['auth', 'verified'])->name('admin.settings');
-Route::put('admin/settings', [AppSettingsController::class, 'store'])->middleware(['auth', 'verified'])->name('admin.settings.update');
-Route::get('admin/notifications', [AppSettingsController::class, 'notifications'])->middleware(['auth', 'verified'])->name('admin.notifications');
-Route::post('admin/notifications', [AppSettingsController::class, 'notificationsStore'])->middleware(['auth', 'verified'])->name('admin.notifications.store');
-Route::get('admin/payments', [AppSettingsController::class, 'payments'])->middleware(['auth', 'verified'])->name('admin.payments');
-Route::get('admin/users', [AppSettingsController::class, 'user'])->middleware(['auth', 'verified'])->name('admin.users');
-Route::get('admin/prize', [AppSettingsController::class, 'prize'])->middleware(['auth', 'verified'])->name('admin.prize');
-Route::get('admin/cycle', [AppSettingsController::class, 'cycle'])->middleware(['auth', 'verified'])->name('admin.cycle');
-Route::get('admin/dashboard', [AppSettingsController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('admin.dashboard');
+Route::prefix('admin')
+    ->middleware(['auth', 'verified', 'is_admin'])
+    ->group(function () {
+        Route::get('settings', [AppSettingsController::class, 'index'])->name('admin.settings');
+        Route::put('settings', [AppSettingsController::class, 'store'])->name('admin.settings.update');
 
-Route::post('admin/winners/announce', [WinnerController::class, 'announce'])
-    ->middleware(['auth', 'verified', 'is_admin']);
+        Route::get('notifications', [AppSettingsController::class, 'notifications'])->name('admin.notifications');
+        Route::post('notifications', [AppSettingsController::class, 'notificationsStore'])->name('admin.notifications.store');
+
+        Route::get('users', [AppSettingsController::class, 'user'])->name('admin.users');
+        Route::get('prize', [AppSettingsController::class, 'prize'])->name('admin.prize');
+        Route::get('cycle', [AppSettingsController::class, 'cycle'])->name('admin.cycle');
+        Route::get('dashboard', [AppSettingsController::class, 'dashboard'])->name('admin.dashboard');
+
+        Route::get('payments', [PaymentsController::class, 'adminpayments'])->name('admin.payments');
+        Route::put('payments/{id}/status', [PaymentsController::class, 'updateStatus'])->name('payments.updateStatus');
+
+        Route::post('winners/announce', [WinnerController::class, 'announce']);
+    });
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/mypayments', [PaymentsController::class, 'mypayments'])->name('mypayments');
@@ -74,11 +81,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('user.notifications.read');
     Route::post('/notifications/read-all', [AppNotificationReadController::class, 'storeAll'])
         ->name('user.notifications.read-all');
-});
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/admin/payments', [PaymentsController::class, 'adminpayments'])->name('admin.payments');
-    Route::put('/admin/payments/{id}/status', [PaymentsController::class, 'updateStatus'])->name('payments.updateStatus');
 });
 
 

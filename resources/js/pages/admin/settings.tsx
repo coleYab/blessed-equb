@@ -134,7 +134,7 @@ const TRANSLATIONS = {
 
 export default function Settings() {
     const { settings, status } = usePage<PageProps>().props;
-    const [language, setLanguage] = useState<Language>('en');
+    const language: Language = 'en';
     const t = TRANSLATIONS[language];
 
     // Modern Inertia: useForm handles state, processing, errors, and dirty checking
@@ -197,20 +197,6 @@ export default function Settings() {
                             </div>
 
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-                                <div className="flex flex-col gap-2 sm:items-end">
-                                    <div className="text-[10px] font-bold tracking-wider text-white/60 uppercase">
-                                        {t.language}
-                                    </div>
-                                    <select
-                                        value={language}
-                                        onChange={(e) => setLanguage(e.target.value as Language)}
-                                        className="h-10 rounded-2xl border border-white/15 bg-white/5 px-3 text-sm font-bold text-white shadow-sm outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-400/10"
-                                    >
-                                        <option value="en">English</option>
-                                        <option value="am">አማርኛ</option>
-                                    </select>
-                                </div>
-
                                 <div className="flex items-center gap-2">
                                     <Button
                                         type="button"

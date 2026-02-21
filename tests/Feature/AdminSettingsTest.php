@@ -4,8 +4,8 @@ use App\Models\AppSetting;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
-test('admin settings page is displayed for authenticated users', function () {
-    $user = User::factory()->create();
+test('admin settings page is displayed for admins', function () {
+    $user = User::factory()->create(['is_admin' => true]);
 
     $response = $this
         ->actingAs($user)
@@ -20,12 +20,12 @@ test('admin settings page is displayed for authenticated users', function () {
 });
 
 test('admin settings can be updated', function () {
-    $user = User::factory()->create();
-    AppSetting::current();
+    $user = User::factory()->create(['is_admin' => true]);
+    AppSetting::factory()->create();
 
     $response = $this
         ->actingAs($user)
-        ->put(route('admin.settings.store'), [
+        ->put(route('admin.settings.update'), [
             'cycle' => 2,
             'daysRemaining' => 7,
             'drawDate' => '2026-03-15',
@@ -44,7 +44,7 @@ test('admin settings can be updated', function () {
         ->assertSessionHas('status', 'Settings saved successfully.')
         ->assertRedirect(route('admin.settings'));
 
-    $settings = AppSetting::current();
+    $settings = AppSetting::query()->firstOrFail();
     expect($settings->cycle)->toBe(2);
     expect($settings->days_remaining)->toBe(7);
     expect($settings->draw_date->format('Y-m-d'))->toBe('2026-03-15');
@@ -57,11 +57,11 @@ test('admin settings can be updated', function () {
 });
 
 test('admin settings validates required fields', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create(['is_admin' => true]);
 
     $response = $this
         ->actingAs($user)
-        ->put(route('admin.settings.store'), [
+        ->put(route('admin.settings.update'), [
             'cycle' => 'invalid',
             'daysRemaining' => -1,
             'drawDate' => '',
@@ -81,4 +81,12 @@ test('unauthenticated users cannot access admin settings', function () {
     $response = $this->get(route('admin.settings'));
 
     $response->assertRedirect(route('login'));
+});
+
+test('non-admin authenticated users cannot access admin settings', function () {
+    $user = User::factory()->create(['is_admin' => false]);
+
+    $this->actingAs($user)
+        ->get(route('admin.settings'))
+        ->assertForbidden();
 });
