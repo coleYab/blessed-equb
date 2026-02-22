@@ -1,16 +1,20 @@
 import { Head, Link } from '@inertiajs/react';
 import Footer from '@/components/landing/footer';
 import { TRANSLATIONS } from '@/constants';
+import { useLanguage } from '@/hooks/use-language';
 import { home } from '@/routes';
-import type { Language } from '@/types/app';
 
-interface PrivacyProps {
-    language?: Language;
-}
 
-export default function Privacy({ language = 'en' }: PrivacyProps) {
-    const terms = TRANSLATIONS[language].terms_page;
+export default function Privacy() {
+    const { language } = useLanguage();
+    const common = TRANSLATIONS[language].common;
+    const privacy = TRANSLATIONS[language].privacy_page;
     const footerT = TRANSLATIONS[language].footer;
+
+    type PolicySection = {
+        heading: string;
+        content: string;
+    };
 
     return (
         <>
@@ -24,7 +28,7 @@ export default function Privacy({ language = 'en' }: PrivacyProps) {
                             className="text-sm font-semibold text-stone-800 hover:underline"
                             prefetch
                         >
-                            Back
+                            {common.back}
                         </Link>
                     </div>
                 </header>
@@ -34,26 +38,28 @@ export default function Privacy({ language = 'en' }: PrivacyProps) {
                         {footerT.privacy}
                     </h1>
 
-                    <section className="mt-8 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-                        <h2 className="text-lg font-bold text-stone-900">{terms.sections[4].heading}</h2>
-                        <p className="mt-2 text-sm leading-relaxed text-stone-600">
-                            {terms.sections[4].content}
-                        </p>
-                    </section>
+                    <p className="mt-2 text-sm text-stone-500">{privacy.last_updated}</p>
 
-                      <section className="mt-8 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-                        <h2 className="text-lg font-bold text-stone-900">{terms.sections[4].heading}</h2>
-                        <p className="mt-2 text-sm leading-relaxed text-stone-600">
-                            {terms.sections[4].content}
-                        </p>
-                    </section>
-
-                      <section className="mt-8 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-                        <h2 className="text-lg font-bold text-stone-900">{terms.sections[4].heading}</h2>
-                        <p className="mt-2 text-sm leading-relaxed text-stone-600">
-                            {terms.sections[4].content}
-                        </p>
-                    </section>
+                    <div className="mt-8 space-y-6">
+                        {(privacy.sections as PolicySection[]).map((section: PolicySection) => (
+                            <section
+                                key={section.heading}
+                                className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+                            >
+                                <h2 className="text-lg font-bold text-stone-900">
+                                    {section.heading}
+                                </h2>
+                                <div className="mt-2 space-y-3 text-sm leading-relaxed text-stone-600">
+                                    {section.content
+                                        .split('\n\n')
+                                        .filter(Boolean)
+                                        .map((paragraph: string) => (
+                                            <p key={paragraph}>{paragraph}</p>
+                                        ))}
+                                </div>
+                            </section>
+                        ))}
+                    </div>
                 </main>
 
                 <Footer language={language} />

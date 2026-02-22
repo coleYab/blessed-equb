@@ -2,6 +2,9 @@ import type { AppSettings } from "@/types/app";
 
 export const TRANSLATIONS = {
   en: {
+    common: {
+        back: "Back",
+    },
     nav: { home: "Home", how: "How It Works", prizes: "Prizes", join: "Join Now", login: "Login", register: "Register", logout: "Logout", dashboard: "Dashboard", secure: "Secure Session", profile: "Profile" },
     hero: { subtitle: "TO DRAW THIS CYCLES PRIZE:", subtitle_today: "TODAY ONE LUCKY PERSON WILL TAKE THE CAR", title1: "Drive Your Dream.", title2: "Secure Your Future.", desc: "Experience the future of saving with Ethiopia's premier digital Equb. We combine tradition with technology to turn your monthly contributions into the car of your dreams.", cta: "Claim Your Lucky Number Today", watch: "Watch Video", prize_label: "This Month's Prize", prize_value: "Value", prize_name: "BYD E2 Luxury 2025" },
     stats: { members: "Active Members", cars: "Cars Delivered", pot: "Total Pot Value", trust: "Trust Score", taken: "Taken Numbers", lucky: "Lucky Numbers" },
@@ -130,27 +133,113 @@ export const TRANSLATIONS = {
     },
     terms_page: {
         title: "Terms and Conditions",
-        last_updated: "Last Updated: March 2024",
+        last_updated: "Last Updated: February 2026",
         sections: [
             {
-                heading: "1. Service Agreement",
-                content: "By using the Blessed Digital Equb application, you agree to be bound by the terms and obligations outlined in this agreement."
+                heading: "1. Acceptance of These Terms",
+                content: "By accessing or using this application and any related services (the \"Service\"), you agree to be bound by these Terms and Conditions (\"Terms\"). If you do not agree, do not use the Service.\n\nThese Terms apply to all visitors, users, and others who access or use the Service."
             },
             {
-                heading: "2. Eligibility",
-                content: "You must be at least 18 years old and a resident of Ethiopia to participate in draws and Equb cycles. Valid ID is required to claim prizes."
+                heading: "2. Eligibility and Account Registration",
+                content: "You must be at least 18 years old and capable of forming a binding agreement under applicable law to use the Service.\n\nYou agree to provide accurate information when creating an account and to keep it up to date. You are responsible for safeguarding your account and for all activities that occur under your account."
             },
             {
-                heading: "3. Lucky Numbers & Claims",
-                content: "Members agree to make monthly payments according to their selected tier. Contributions are non-refundable once a cycle begins. Failure to pay may result in suspension."
+                heading: "3. The Equb Program and Contributions",
+                content: "The Service is designed to help facilitate digital participation in an Equb-style contribution and draw program (the \"Program\"). Program terms such as contribution amounts, cycle schedules, draw dates, and eligibility to participate may be set by the Service and may change from time to time.\n\nUnless otherwise required by applicable law, contributions and fees (if any) may be non-refundable once a cycle begins. Missed or late contributions may affect your eligibility for that cycle, including suspension or ineligibility to participate in the draw."
             },
             {
-                heading: "4. Draw Process",
-                content: "Winners are selected through a transparent, random draw process. Results are final. Winners must claim their prize within 30 days."
+                heading: "4. Payments, Verification, and Receipts",
+                content: "You may be able to submit proof of payment (including receipts or transaction references) for verification. You represent that any payment information you submit is truthful and belongs to you.\n\nWe may request additional information to verify payments or to prevent fraud. We may reject or delay verification if information is incomplete, inconsistent, or appears fraudulent."
             },
             {
-                heading: "5. Privacy",
-                content: "We value your privacy. Your personal information, including phone number and payment details, is encrypted and used solely for service delivery and verification."
+                heading: "5. Tickets / Lucky Numbers",
+                content: "Where the Service allows selecting a ticket or \"lucky number\", availability is on a first-come, first-served basis and may be subject to verification status and payment confirmation.\n\nWe may prevent, revoke, or reassign tickets if we determine (in our reasonable discretion) that the selection was made through abuse, automation, fraud, or violation of these Terms."
+            },
+            {
+                heading: "6. Draw Process and Results",
+                content: "Draws are intended to be conducted using a transparent and random selection process. The specific method and timing of the draw may be published within the Service or through official announcements.\n\nTo the extent permitted by law, draw results recorded by the Service are final and binding, subject only to correction of clear technical or administrative errors."
+            },
+            {
+                heading: "7. Prizes and Prize Claims",
+                content: "If prizes are offered, prize details, eligibility rules, and claim requirements will be provided through the Service or official communications. Winners may be required to complete identity verification and provide documentation before receiving a prize.\n\nIf a winner does not respond or complete required steps within a specified claim period, the prize may be forfeited and an alternate winner may be selected, where applicable."
+            },
+            {
+                heading: "8. Prohibited Conduct",
+                content: "You agree not to misuse the Service. This includes, but is not limited to: attempting to gain unauthorized access; using automation to claim tickets; submitting fraudulent receipts; interfering with the Service’s normal operation; or using the Service for unlawful activities.\n\nWe may suspend or terminate accounts involved in prohibited conduct."
+            },
+            {
+                heading: "9. Suspension and Termination",
+                content: "We may suspend, restrict, or terminate your access to the Service at any time if we believe you have violated these Terms, created risk, or engaged in fraud or misuse.\n\nYou may stop using the Service at any time. Some obligations (including payment obligations for cycles already started, where applicable) may survive termination."
+            },
+            {
+                heading: "10. Disclaimers",
+                content: "The Service is provided on an \"as is\" and \"as available\" basis. We do not guarantee uninterrupted access, error-free operation, or that the Service will meet your requirements.\n\nTo the maximum extent permitted by law, we disclaim all warranties, express or implied, including fitness for a particular purpose and non-infringement."
+            },
+            {
+                heading: "11. Limitation of Liability",
+                content: "To the maximum extent permitted by law, we will not be liable for indirect, incidental, special, consequential, or punitive damages, or for any loss of profits, data, or goodwill arising out of or related to your use of the Service.\n\nWhere liability cannot be excluded, it will be limited to the minimum amount permitted by applicable law."
+            },
+            {
+                heading: "12. Privacy",
+                content: "Your use of the Service is also governed by our Privacy Policy, which explains how we collect, use, and share information."
+            },
+            {
+                heading: "13. Changes to These Terms",
+                content: "We may update these Terms from time to time. If we make material changes, we will take reasonable steps to notify you through the Service. Continued use of the Service after changes become effective means you accept the updated Terms."
+            },
+            {
+                heading: "14. Contact",
+                content: "If you have questions about these Terms, please contact us using the contact information provided in the Service."
+            }
+        ]
+    },
+    privacy_page: {
+        title: "Privacy Policy",
+        last_updated: "Last Updated: February 2026",
+        sections: [
+            {
+                heading: "1. Overview",
+                content: "This Privacy Policy explains how we collect, use, disclose, and protect your information when you use the Service.\n\nBy using the Service, you understand and agree to the practices described in this Privacy Policy."
+            },
+            {
+                heading: "2. Information We Collect",
+                content: "We may collect the following types of information:\n\n- Account information such as name, phone number, and other details you provide.\n- Verification information such as identity details where required to confirm eligibility or prize claims.\n- Payment-related information such as transaction references, receipt images, declared amounts, and payment timestamps (we do not recommend sharing unnecessary sensitive data).\n- Usage information such as pages visited, actions taken, device and browser information, and approximate location derived from IP address."
+            },
+            {
+                heading: "3. How We Use Your Information",
+                content: "We use information to:\n\n- Provide and operate the Service (including account creation, ticket selection, cycle participation, and notifications).\n- Verify payments and prevent fraud, abuse, and unauthorized access.\n- Communicate with you about your account, the Program, and changes to the Service.\n- Improve, monitor, and maintain the Service, including debugging and security."
+            },
+            {
+                heading: "4. How We Share Your Information",
+                content: "We may share information in limited circumstances:\n\n- With service providers who help us operate the Service (e.g., hosting, analytics, customer support), under appropriate confidentiality obligations.\n- To comply with legal obligations, lawful requests, or to protect rights, safety, and security.\n- In connection with a business transaction (e.g., restructuring), where permitted by law."
+            },
+            {
+                heading: "5. Retention",
+                content: "We retain personal information only as long as necessary to provide the Service, meet legal or regulatory requirements, resolve disputes, and enforce agreements.\n\nRetention periods may vary depending on the type of data and the purpose for which it is processed."
+            },
+            {
+                heading: "6. Security",
+                content: "We implement reasonable technical and organizational measures designed to protect your information. However, no security system is perfect, and we cannot guarantee absolute security.\n\nYou are responsible for keeping your login credentials confidential and for using the Service on trusted devices."
+            },
+            {
+                heading: "7. Cookies and Local Storage",
+                content: "We may use cookies and local storage to keep you signed in, remember your language preference, and support basic functionality.\n\nYou can control cookies through your browser settings, but disabling certain cookies may affect the Service."
+            },
+            {
+                heading: "8. Your Choices and Rights",
+                content: "Depending on applicable law, you may have rights to access, correct, delete, or object to certain processing of your personal information.\n\nTo make a request, contact us using the contact information provided in the Service. We may need to verify your identity before fulfilling requests."
+            },
+            {
+                heading: "9. Children’s Privacy",
+                content: "The Service is not intended for individuals under 18. We do not knowingly collect personal information from children. If you believe a child has provided personal information, please contact us so we can take appropriate action."
+            },
+            {
+                heading: "10. Changes to This Privacy Policy",
+                content: "We may update this Privacy Policy from time to time. If we make material changes, we will take reasonable steps to notify you through the Service. The \"Last Updated\" date indicates when this Privacy Policy was last revised."
+            },
+            {
+                heading: "11. Contact",
+                content: "If you have questions about this Privacy Policy or our privacy practices, please contact us using the contact information provided in the Service."
             }
         ]
     },
@@ -164,6 +253,9 @@ export const TRANSLATIONS = {
     }
   },
   am: {
+    common: {
+        back: "ተመለስ",
+    },
     nav: { home: "መነሻ", how: "እንዴት ይሰራል", prizes: "ሽልማቶች", join: "ይመዝገቡ", login: "ይግቡ", register: "ይመዝገቡ", logout: "ውጣ", dashboard: "ዳሽቦርድ", secure: "ደህንነቱ የተጠበቀ", profile: "ፕሮፋይል" },
     hero: { subtitle: "የዚህ ዙር እጣ ሊወጣ የቀረው ጊዜ:", subtitle_today: "ዛሬ አንድ እድለኛ ሰው መኪናውን ይረከባል", title1: "ህልምዎን ይንዱ።", title2: "ነገዎን ያረጋግጡ።", desc: "የቁጠባ ባህልን ከዘመናዊ ቴክኖሎጂ ጋር በማጣመር የህልም መኪናዎን ባለቤት የሚያደርግዎ የኢትዮጵያ ቀዳሚ ዲጂታል እቁብ።", cta: "የእድለኛ ቁጥርዎን ዛሬ ይያዙ", watch: "ቪዲዮ ይመልከቱ", prize_label: "የዚህ ወር ሽልማት", prize_value: "ዋጋ", prize_name: "BYD E2 Luxury 2025" },
     stats: { members: "ንቁ አባላት", cars: "የተሰጡ መኪኖች", pot: "ጠቅላላ የገንዘብ መጠን", trust: "የታማኝነት ነጥብ", taken: "የተያዙ ቁጥሮች", lucky: "እድለኛ ቁጥሮች" },
@@ -292,27 +384,113 @@ export const TRANSLATIONS = {
     },
     terms_page: {
         title: "ውሎች እና ሁኔታዎች",
-        last_updated: "ለመጨረሻ ጊዜ የተሻሻለው: መጋቢት 2016",
+        last_updated: "ለመጨረሻ ጊዜ የተሻሻለው: የካቲት 2018",
         sections: [
             {
-                heading: "1. የአገልግሎት ስምምነት",
-                content: "የብለስድ ዲጂታል እቁብ መተግበሪያን ሲጠቀሙ፣ በዚህ ስምምነት ላይ በተገለጹት ውሎች እና ግዴታዎች ለመገዛት ይስማማሉ።"
+                heading: "1. ውሎቹን መቀበል",
+                content: "ይህን መተግበሪያ እና ተያያዥ አገልግሎቶቹን (\"አገልግሎት\") በመጠቀም ይህን ውሎች እና ሁኔታዎች (\"ውሎች\") ለመከተል ይስማማሉ። ካልተስማሙ አገልግሎቱን አይጠቀሙ።\n\nይህ ውሎች ለሁሉም ጎብኚዎች እና ተጠቃሚዎች ይተገበራሉ።"
             },
             {
-                heading: "2. መስፈርቶች",
-                content: "በእጣው እና በእቁብ ዙሮች ለመሳተፍ እድሜዎ ቢያንስ 18 ዓመት እና የኢትዮጵያ ነዋሪ መሆን አለብዎት። ሽልማቶችን ለመቀበል የሚሰራ መታወቂያ ያስፈልጋል።"
+                heading: "2. ብቁነት እና መመዝገብ",
+                content: "አገልግሎቱን ለመጠቀም ቢያንስ 18 ዓመት መሆን እና በህግ መሠረት የሚገባ ስምምነት ማድረግ መቻል አለብዎት።\n\nመለያ ሲፈጥሩ ትክክለኛ መረጃ መስጠት እና መረጃዎን ማዘመን ይጠበቅበታል። መለያዎን ለመጠበቅ እና በመለያዎ የሚፈጸሙ ተግባራት ሁሉ ሃላፊነቱ የእርስዎ ነው።"
             },
             {
-                heading: "3. የእድለኛ ቁጥሮች እና ያርግቶች",
-                content: "አባላት በተመረጠው እርከን መሰረት ወራዊ ክፍያ ለመፈጸም ይስማማሉ። የወር እቁብ ዑደቱ ከተጀመረ በኋላ የተከፈለ ገንዘብ ተመላሽ አይደረግም። ክፍያ አለመፈጸም ከአገልግሎት ሊያግድ ይችላል።"
+                heading: "3. የእቁብ ፕሮግራም እና መዋጮ",
+                content: "አገልግሎቱ በዲጂታል መንገድ የእቁብ ዓይነት መዋጮ እና የእጣ ሂደት (\"ፕሮግራም\") ለማስተናገድ ተዘጋጅቷል። እንደ መዋጮ መጠን፣ የዙር ሰሌዳ፣ የእጣ ቀን እና የብቁነት መስፈርቶች በአገልግሎቱ ሊወሰኑ እና ከጊዜ ወደ ጊዜ ሊቀየሩ ይችላሉ።\n\nህግ ካልጠየቀ በቀር ዙር ከተጀመረ በኋላ የተከፈሉ መዋጮዎች ወይም ክፍያዎች (ካሉ) ተመላሽ ሊሆኑ አይችሉም። ዘግይቶ ወይም ሳይከፈል ከቀረ ክፍያ በዚያ ዙር ላይ ብቁነትዎን ሊነካ ይችላል።"
             },
             {
-                heading: "4. የእጣ አወጣጥ",
-                content: "አሸናፊዎች ግልጽ በሆነ እና በዘፈቀደ የእጣ አወጣጥ ሂደት ይመረጣሉ። ውጤቱ የመጨረሻ ነው። አሸናፊዎች ሽልማታቸውን በ30 ቀናት ውስጥ መቀበል አለባቸው።"
+                heading: "4. ክፍያ ማረጋገጫ እና ደረሰኞች",
+                content: "ክፍያ ማረጋገጫ ለማድረግ ደረሰኝ ወይም የግብይት ማስረጃ ሊጫኑ ይችላሉ። የሚጫኑት መረጃ ትክክለኛ እና የእርስዎ መሆኑን ታረጋግጣላችሁ።\n\nማጭበርበር ለመከላከል ተጨማሪ መረጃ ልንጠይቅ እንችላለን። መረጃው ካልተሟላ ወይም አስተማማኝ ካልሆነ ማረጋገጡ ሊዘገይ ወይም ሊታገድ ይችላል።"
             },
             {
-                heading: "5. ግላዊነት",
-                content: "የእርስዎን ግላዊነት እናከብራለን። የግል መረጃዎ፣ ስልክ ቁጥር እና የክፍያ ዝርዝሮችን ጨምሮ፣ የተመሰጠረ እና ለአገልግሎት አሰጣጥ እና ማረጋገጫ ብቻ የሚውል ነው።"
+                heading: "5. ቲኬት / እድለኛ ቁጥር",
+                content: "አገልግሎቱ ቲኬት ወይም \"እድለኛ ቁጥር\" መምረጥ ካስቻለ፣ ብቁነት እና የክፍያ ማረጋገጫ መሰረት ሊሆን ይችላል፣ እንዲሁም በመጀመሪያ የደረሰ ቅድሚያ ሊሆን ይችላል።\n\nበአግባቡ መጠቀም ካልሆነ (ማጭበርበር፣ ራስ-ሰር መንገዶች መጠቀም ወዘተ) ቲኬት መከልከል ወይም መመለስ ሊደረግ ይችላል።"
+            },
+            {
+                heading: "6. የእጣ ሂደት እና ውጤት",
+                content: "እጣው በግልጽ እና በዘፈቀደ መንገድ እንዲካሄድ ይታሰባል። የእጣ ዘዴ እና ጊዜ በመተግበሪያው ውስጥ ወይም በይፋ ማስታወቂያ ሊገለጽ ይችላል።\n\nህግ በሚፈቅደው መጠን ውስጥ በአገልግሎቱ የተመዘገበ ውጤት የመጨረሻ ነው፣ ከግልጽ ቴክኒካዊ ወይም አስተዳደራዊ ስህተት ማስተካከል በስተቀር።"
+            },
+            {
+                heading: "7. ሽልማቶች እና ሽልማት መቀበል",
+                content: "ሽልማት ካለ፣ ዝርዝሮቹ፣ የብቁነት መመሪያዎች እና የማረጋገጫ መስፈርቶች በመተግበሪያው ውስጥ ወይም በይፋ ግንኙነት ይገለጻሉ። አሸናፊዎች ማንነት ማረጋገጫ ማቅረብ ሊያስፈልጋቸው ይችላል።\n\nበተወሰነ ጊዜ ውስጥ ካልተገናኙ ወይም የሚያስፈልጉ እርምጃዎችን ካላጠናቀቁ ሽልማቱ ሊሰረዝ እና ሌላ አሸናፊ ሊመረጥ ይችላል።"
+            },
+            {
+                heading: "8. የተከለከለ አጠቃቀም",
+                content: "አገልግሎቱን በማጭበርበር ወይም በማጥፋት መጠቀም አይፈቀድም። ይህ ያካትታል፦ ያልተፈቀደ መዳረሻ ለመሞከር፣ ቲኬት ለመያዝ ራስ-ሰር መንገዶች መጠቀም፣ የሐሰት ደረሰኝ መላክ፣ የአገልግሎቱን መስራት ማበላሸት ወዘተ።\n\nእንደዚህ ያሉ ተግባራት ቢገኙ መለያ መታገድ ወይም መዘጋት ሊፈጸም ይችላል።"
+            },
+            {
+                heading: "9. መታገድ እና መዘጋት",
+                content: "ውሎቹን ካልከተሉ ወይም አደጋ እንደሚፈጥሩ ካመንን መለያዎን ለጊዜው ማስቆም ወይም መዘጋት እንችላለን።\n\nእርስዎ በማንኛውም ጊዜ መጠቀምን ማቆም ይችላሉ። (የተጀመሩ ዙሮች ግን ካሉ ግዴታዎች ሊቀጥሉ ይችላሉ።)"
+            },
+            {
+                heading: "10. ማስተባበሪያ",
+                content: "አገልግሎቱ በ\"እንዳለ\" እና በ\"እንደሚገኝ\" መልኩ ይሰጣል። ሁልጊዜ ያለ መቋረጥ እንዲሰራ ወይም ስህተት እንዳይኖር አናረጋግጥም።\n\nህግ በሚፈቅደው መጠን ውስጥ ሁሉንም ዋስትናዎች እንወድቃለን።"
+            },
+            {
+                heading: "11. የተጠያቂነት ገደብ",
+                content: "ህግ በሚፈቅደው መጠን ውስጥ ከአገልግሎቱ አጠቃቀም የሚመጡ ተጨማሪ ወይም ተከታታይ ጉዳቶች ላይ ተጠያቂ አንሆንም (ገንዘብ፣ ዳታ፣ ክብር መጥፋት ወዘተ)።\n\nተጠያቂነት ሊገደብ ባይችል ቢያንስ በህግ የተፈቀደውን መጠን ያከብራል።"
+            },
+            {
+                heading: "12. ግላዊነት",
+                content: "አገልግሎቱን መጠቀምዎ ከ\"የግላዊነት መመሪያ\" ጋር ይገናኛል፣ እና መረጃ እንዴት እንደምንሰበስብ፣ እንዴት እንደምንጠቀም እና እንዴት እንደምንጋራ ይገልጻል።"
+            },
+            {
+                heading: "13. ውሎች ለውጥ",
+                content: "እነዚህን ውሎች ከጊዜ ወደ ጊዜ ልናዘምን እንችላለን። ጉልህ ለውጥ ካደረግን በመተግበሪያው ውስጥ ማሳወቂያ ለመስጠት እንሞክራለን። ከለውጡ በኋላ መቀጠል የተሻሻሉትን ውሎች መቀበል ማለት ነው።"
+            },
+            {
+                heading: "14. አግኙን",
+                content: "ስለ ውሎቹ ጥያቄ ካለዎት በመተግበሪያው ውስጥ በተገለጸው የመገናኛ መረጃ ያግኙን።"
+            }
+        ]
+    },
+    privacy_page: {
+        title: "የግላዊነት መመሪያ",
+        last_updated: "ለመጨረሻ ጊዜ የተሻሻለው: የካቲት 2018",
+        sections: [
+            {
+                heading: "1. አጠቃላይ ገለጻ",
+                content: "ይህ የግላዊነት መመሪያ አገልግሎቱን ሲጠቀሙ መረጃዎን እንዴት እንደምንሰበስብ፣ እንዴት እንደምንጠቀም፣ እንዴት እንደምንጋራ እና እንዴት እንደምንጠብቅ ያብራራል።\n\nአገልግሎቱን በመጠቀም በዚህ መመሪያ ውስጥ ተገልጹ ልምዶችን ተረድተው እንደምትቀበሉ ያሳያል።"
+            },
+            {
+                heading: "2. የምንሰበስበው መረጃ",
+                content: "እነዚህን ዓይነት መረጃዎች ልንሰበስብ እንችላለን፦\n\n- እንደ ስም፣ ስልክ ቁጥር እና ሌሎች የመለያ መረጃዎች።\n- ለብቁነት ወይም ለሽልማት መቀበል የሚያስፈልግ የማረጋገጫ መረጃ።\n- እንደ የግብይት መለያ/ሪፈረንስ፣ የደረሰኝ ምስል፣ የተገለጸ መጠን እና ቀን-ሰዓት ያሉ የክፍያ ማስረጃዎች።\n- እንደ የመሣሪያ እና የብራውዘር መረጃ፣ የገጽ ጉብኝት እና የአጠቃቀም መረጃ።"
+            },
+            {
+                heading: "3. መረጃን እንዴት እንጠቀማለን",
+                content: "መረጃን ለሚከተሉት አላማዎች እንጠቀማለን፦\n\n- አገልግሎቱን ለማቅረብ እና ለማስተዳደር (መለያ ፍጠር፣ ቲኬት መምረጥ፣ ተሳትፎ እና ማሳወቂያዎች)።\n- ክፍያ ለማረጋገጥ እና ማጭበርበር ለመከላከል።\n- ስለ መለያዎ ወይም ስለ ለውጦች ለማሳወቅ እና ለመገናኘት።\n- አገልግሎቱን ለማሻሻል፣ ለማሳሰብ እና ለደህንነት ለመጠበቅ።"
+            },
+            {
+                heading: "4. መረጃን እንዴት እንጋራለን",
+                content: "መረጃን በተወሰኑ ሁኔታዎች ብቻ ልንጋራ እንችላለን፦\n\n- አገልግሎቱን ለማስኬድ የሚረዱን አገልግሎት አቅራቢዎች ጋር (እንደ ሆስቲንግ እና ድጋፍ) በሚገባ የሚስጥር ግዴታ ስር።\n- ህጋዊ ግዴታ ሲኖር ወይም ደህንነትን ለመጠበቅ ሲያስፈልግ።\n- በንግድ ለውጥ/ማዋሃድ ሁኔታ ሲኖር ህግ በሚፈቅደው መጠን ውስጥ።"
+            },
+            {
+                heading: "5. የመረጃ ማቆያ ጊዜ",
+                content: "መረጃዎን አገልግሎቱን ለማቅረብ፣ ህጋዊ/የቁጥጥር ግዴታዎችን ለማሟላት እና ግጭቶችን ለመፍታት የሚያስፈልገውን ጊዜ ብቻ እንቆይበታለን።\n\nየማቆያ ጊዜዎች እንደ መረጃው ዓይነት እና አላማ ሊለያዩ ይችላሉ።"
+            },
+            {
+                heading: "6. ደህንነት",
+                content: "መረጃዎን ለመጠበቅ ተገቢ ቴክኒካዊ እና የአስተዳደር መለኪያዎችን እንወስዳለን። ነገር ግን ፍጹም ደህንነት መዋል አይቻልም።\n\nየመግቢያ መረጃዎን መጠበቅ እና በታማኝ መሣሪያ ላይ መጠቀም የእርስዎ ሃላፊነት ነው።"
+            },
+            {
+                heading: "7. ኩኪዎች እና ሎካል ስቶረጅ",
+                content: "መግባትዎን ለማስቀመጥ፣ የቋንቋ ምርጫዎን ለማስታወስ እና መሠረታዊ ተግባር ለማስቻል ኩኪዎች እና ሎካል ስቶረጅ ልንጠቀም እንችላለን።\n\nኩኪዎችን በብራውዘር ቅንብር መቆጣጠር ይችላሉ፣ ነገር ግን አንዳንድ ተግባራት ሊታገዱ ይችላሉ።"
+            },
+            {
+                heading: "8. ምርጫዎችዎ እና መብቶችዎ",
+                content: "በተፈጻሚ ህግ መሠረት መረጃዎን ማግኘት፣ ማስተካከል፣ መሰረዝ ወይም የተወሰነ አሰራር ላይ መቃወም መብት ሊኖርዎት ይችላል።\n\nጥያቄ ለማቅረብ በመተግበሪያው ውስጥ ባለው የመገናኛ መረጃ ያግኙን። ጥያቄዎን ከመፈጸም በፊት ማንነት ማረጋገጫ ልንጠይቅ እንችላለን።"
+            },
+            {
+                heading: "9. የልጆች ግላዊነት",
+                content: "አገልግሎቱ ከ18 ዓመት በታች ለሆኑ ግለሰቦች አልተዘጋጀም። ከልጆች መረጃ በግዴታ አንሰበስብም። ልጅ መረጃ እንደሰጠ ካመኑ እባክዎ ያግኙን።"
+            },
+            {
+                heading: "10. የመመሪያው ለውጥ",
+                content: "ይህን የግላዊነት መመሪያ ከጊዜ ወደ ጊዜ ልናዘምን እንችላለን። ጉልህ ለውጥ ካደረግን በመተግበሪያው ውስጥ ማሳወቂያ ለመስጠት እንሞክራለን። የ\"ለመጨረሻ ጊዜ የተሻሻለው\" ቀን መመሪያው መቼ እንደተሻሻለ ያሳያል።"
+            },
+            {
+                heading: "11. አግኙን",
+                content: "ስለ ይህ የግላዊነት መመሪያ ወይም ስለ የግላዊነት ልምዶቻችን ጥያቄ ካለዎት በመተግበሪያው ውስጥ በተገለጸው የመገናኛ መረጃ ያግኙን።"
             }
         ]
     },

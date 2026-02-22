@@ -62,7 +62,7 @@ export default function Login({
                                     <Label htmlFor="password">{t.label_password}</Label>
                                     {canResetPassword && (
                                         <TextLink
-                                            href={request()}
+                                            href={"#"}
                                             className="ml-auto text-sm"
                                             tabIndex={5}
                                         >

@@ -30,26 +30,54 @@ const Footer: React.FC<FooterProps> = ({ language = 'en' }) => {
             <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">{t.contact}</h4>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center">
-                <Phone className="w-4 h-4 mr-2 text-emerald-500" /> +251 911 234 567
+                <Phone className="w-4 h-4 mr-2 text-emerald-500" /> +251 907 525 801
               </li>
               <li className="flex items-center">
-                <MapPin className="w-4 h-4 mr-2 text-emerald-500" /> Bole, Addis Ababa
+                <MapPin className="w-4 h-4 mr-2 text-emerald-500" /> Addis Ababa
               </li>
             </ul>
           </div>
           <div>
             <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">{t.social}</h4>
             <div className="flex space-x-4 items-center">
-              <Facebook className="w-5 h-5 hover:text-blue-500 cursor-pointer transition-colors" />
-              <Instagram className="w-5 h-5 hover:text-pink-500 cursor-pointer transition-colors" />
-              <Send className="w-5 h-5 hover:text-blue-400 cursor-pointer transition-colors" />
-              <svg
-                className="w-5 h-5 hover:text-white cursor-pointer transition-colors fill-current"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+              <a
+                href="https://www.facebook.com/share/18DsEfM8fc/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook"
               >
-                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-              </svg>
+                <Facebook className="w-5 h-5 hover:text-blue-500 cursor-pointer transition-colors" />
+              </a>
+              <a
+                href="https://www.instagram.com/blessedekub?igsh=NmZhZDFncncwbmVu&utm_source=qr"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-5 h-5 hover:text-pink-500 cursor-pointer transition-colors" />
+              </a>
+              <a
+                href="https://t.me/Blessedekub"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Telegram"
+              >
+                <Send className="w-5 h-5 hover:text-blue-400 cursor-pointer transition-colors" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@blessedekubb?_r=1&_t=ZS-94829cq6xq1"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="TikTok"
+              >
+                <svg
+                  className="w-5 h-5 hover:text-white cursor-pointer transition-colors fill-current"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                </svg>
+              </a>
             </div>
           </div>
           <div>
