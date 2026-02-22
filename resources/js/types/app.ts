@@ -105,7 +105,7 @@ export interface AdminUser {
   phone: string;
   status: 'PENDING' | 'VERIFIED';
   contribution: number;
-  prizeNumber?: number;
+  prizeNumber?: number | string;
   joinedDate?: string;
 }
 

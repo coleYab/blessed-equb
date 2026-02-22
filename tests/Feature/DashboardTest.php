@@ -147,6 +147,10 @@ test('guests can load public ticket board and check availability', function () {
             ->component('welcome')
             ->has('ticketBoard', fn (Assert $prop) => $prop
                 ->has('data', 12)
+                ->where('data.0.number', 1)
+                ->where('data.0.taken', false)
+                ->where('data.1.number', 2)
+                ->where('data.1.taken', true)
                 ->has('nextCursor')
             )
         );

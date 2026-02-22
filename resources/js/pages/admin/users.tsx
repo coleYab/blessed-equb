@@ -317,9 +317,9 @@ export default function Users({
                                                             </TableCell>
                                                             <TableCell className="px-4 py-3 font-bold text-stone-700">{user.contribution.toLocaleString()} ETB</TableCell>
                                                             <TableCell className="px-4 py-3">
-                                                                {user.prizeNumber ? (
+                                                                {user.prizeNumber?.toString() ? (
                                                                     <span className="inline-flex rounded-lg border border-stone-200 bg-stone-50 px-2 py-1 text-xs font-bold text-stone-700">
-                                                                        #{user.prizeNumber}
+                                                                        #{user.prizeNumber.toString().slice(0, 10)} { user.prizeNumber.toString().length >= 10 ? "..." : "" }
                                                                     </span>
                                                                 ) : (
                                                                     <span className="text-xs text-stone-400">-</span>

@@ -738,27 +738,31 @@ export default function Welcome() {
                                                     </button>
                                                 </div>
                                             ) : (
-                                                tickets
-                                                    .filter((t) => !t.taken)
-                                                    .map((ticket) => (
-                                                        <button
-                                                            key={ticket.number}
-                                                            type="button"
-                                                            disabled={!settings.ticketSelectionEnabled}
-                                                            onClick={() => {
-                                                                if (!settings.ticketSelectionEnabled) {
-                                                                    return;
-                                                                }
+                                                tickets.map((ticket) => (
+                                                    <button
+                                                        key={ticket.number}
+                                                        type="button"
+                                                        disabled={
+                                                            ticket.taken ||
+                                                            !settings.ticketSelectionEnabled
+                                                        }
+                                                        onClick={() => {
+                                                            if (!settings.ticketSelectionEnabled) {
+                                                                return;
+                                                            }
 
-                                                                setLuckySearch(String(ticket.number));
-                                                                setLuckyStatus('AVAILABLE');
-                                                                router.visit(register().url);
-                                                            }}
-                                                            className={`flex aspect-square items-center justify-center rounded-lg border border-emerald-200 bg-white text-sm font-bold text-emerald-600 shadow-sm transition-all duration-300 hover:z-10 hover:scale-110 hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-md md:text-base ${luckySearch === String(ticket.number) ? 'z-20 scale-110 ring-4 ring-amber-400' : ''}`}
-                                                        >
-                                                            {ticket.number}
-                                                        </button>
-                                                    ))
+                                                            setLuckySearch(String(ticket.number));
+                                                            setLuckyStatus(ticket.taken ? 'TAKEN' : 'AVAILABLE');
+                                                        }}
+                                                        className={`flex aspect-square items-center justify-center rounded-lg text-sm font-bold transition-all duration-300 md:text-base ${
+                                                            ticket.taken
+                                                                ? 'cursor-not-allowed border border-stone-200 bg-stone-200 text-stone-400'
+                                                                : 'border border-emerald-200 bg-white text-emerald-600 shadow-sm hover:z-10 hover:scale-110 hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-md'
+                                                        } ${luckySearch === String(ticket.number) ? 'z-20 scale-110 ring-4 ring-amber-400' : ''}`}
+                                                    >
+                                                        {ticket.number}
+                                                    </button>
+                                                ))
                                             )}
                                         </div>
                                         {!settings.ticketSelectionEnabled && (
@@ -771,6 +775,11 @@ export default function Welcome() {
                                                 </div>
                                             </div>
                                         )}
+                                        <p className="mt-3 text-center text-[10px] text-stone-400">
+                                            {language === 'en'
+                                                ? 'Click on any green number to select it.'
+                                                : 'ማንኛውንም አረንጓዴ ቁጥር በመጫን ይምረጡ።'}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
