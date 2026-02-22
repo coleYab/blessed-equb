@@ -44,7 +44,6 @@ export default function Dashboard({
     pendingVerifications,
     systemHealth,
     totalUsers,
-    paymentsVerified,
 }: PageProps) {
     const { props } = usePage();
     const settings = props.settings as AppSettings;
@@ -53,8 +52,8 @@ export default function Dashboard({
     const t = ADMIN_TRANSLATIONS[language];
 
     const currentPot = useMemo(() => {
-        return paymentsVerified * 2000;
-    }, [paymentsVerified]);
+        return Math.max(claimedTickets - 100, 0) * 2000;
+    }, [claimedTickets]);
 
     const pendingPayments = paymentRequests;
 
@@ -84,12 +83,12 @@ export default function Dashboard({
             {
                 id: 'act_004',
                 label: 'Payments received',
-                value: String(paymentsVerified),
+                value: String(currentPot),
                 icon: FileText,
                 className: 'border-stone-200 bg-stone-50 text-stone-700',
             },
         ];
-    }, [systemHealth, totalUsers, claimedTickets, paymentsVerified]);
+    }, [systemHealth, totalUsers, claimedTickets, currentPot]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

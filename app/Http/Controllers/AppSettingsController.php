@@ -66,7 +66,7 @@ class AppSettingsController extends Controller
 
 
         // Approved tickets per user (SQLite-compatible)
-        $tickets = Ticket::where('status', 'APPROVED')
+        $tickets = Ticket::where('status', 'SOLD')
             ->select('userId', DB::raw('GROUP_CONCAT(ticketNumber) as numbers'))
             ->groupBy('userId')
             ->pluck('numbers', 'userId');
@@ -146,7 +146,7 @@ class AppSettingsController extends Controller
         $totalUsers = User::count(); // no need for get()
 
         $claimedTickets = Ticket::query()
-            ->where('status', 'APPROVED')
+            ->where('status', 'SOLD')
             ->count();
 
         return Inertia::render('admin/dashboard', [
