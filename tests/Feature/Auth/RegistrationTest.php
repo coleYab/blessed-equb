@@ -11,8 +11,7 @@ test('registration screen can be rendered', function () {
 test('new users can register', function () {
     $response = $this->post(route('register.store'), [
         'name' => 'Test User',
-        'phone' => '0911000000',
-        'email' => 'test@example.com',
+        'phoneNumber' => '0911000000',
         'password' => 'password',
         'password_confirmation' => 'password',
         'terms' => '1',
@@ -21,6 +20,6 @@ test('new users can register', function () {
     $this->assertAuthenticated();
     $response->assertRedirect(route('dashboard', absolute: false));
 
-    $user = User::query()->where('email', 'test@example.com')->firstOrFail();
+    $user = User::query()->where('phoneNumber', '0911000000')->firstOrFail();
     expect($user->phoneNumber)->toBe('0911000000');
 });

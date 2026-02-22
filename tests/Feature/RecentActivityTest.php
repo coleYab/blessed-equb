@@ -10,12 +10,12 @@ use Illuminate\Support\Facades\Storage;
 test('registration creates a joined recent activity', function () {
     $this->post('/register', [
         'name' => 'Test User',
-        'email' => 'test@example.com',
+        'phoneNumber' => '0911000000',
         'password' => 'password',
         'password_confirmation' => 'password',
     ])->assertRedirect();
 
-    $user = User::query()->where('email', 'test@example.com')->firstOrFail();
+    $user = User::query()->where('phoneNumber', '0911000000')->firstOrFail();
 
     expect(RecentActivity::query()->where('userId', $user->id)->where('type', 'JOINED')->exists())->toBeTrue();
 });

@@ -21,8 +21,7 @@ class AdminUserStoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'phone' => ['required', 'string', 'max:50'],
+            'phone' => ['required', 'string', 'max:50', 'unique:users,phoneNumber'],
             'status' => ['required', 'string', 'in:PENDING,VERIFIED'],
             'joinedDate' => ['nullable', 'date'],
             'ticketNumbers' => ['nullable', 'array'],

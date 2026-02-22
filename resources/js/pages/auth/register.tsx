@@ -60,24 +60,10 @@ export default function Register() {
                                     required
                                     tabIndex={2}
                                     autoComplete="tel"
-                                    name="phone"
+                                    name="phoneNumber"
                                     placeholder={t.placeholder_phone}
                                 />
-                                <InputError message={errors.phone} />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">{t.label_email}</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    required
-                                    tabIndex={3}
-                                    autoComplete="email"
-                                    name="email"
-                                    placeholder={t.placeholder_email}
-                                />
-                                <InputError message={errors.email} />
+                                <InputError message={errors.phoneNumber} />
                             </div>
 
                             <div className="grid gap-2">
@@ -86,7 +72,7 @@ export default function Register() {
                                     id="password"
                                     type="password"
                                     required
-                                    tabIndex={4}
+                                    tabIndex={3}
                                     autoComplete="new-password"
                                     name="password"
                                     placeholder={t.placeholder_password}
@@ -100,7 +86,7 @@ export default function Register() {
                                     id="password_confirmation"
                                     type="password"
                                     required
-                                    tabIndex={5}
+                                    tabIndex={4}
                                     autoComplete="new-password"
                                     name="password_confirmation"
                                     placeholder={t.placeholder_confirm_password}
@@ -117,7 +103,7 @@ export default function Register() {
                                         id="terms"
                                         checked={acceptedTerms}
                                         onCheckedChange={(checked) => setAcceptedTerms(checked === true)}
-                                        tabIndex={6}
+                                        tabIndex={5}
                                     />
                                     <Label htmlFor="terms" className="text-sm">
                                         {t.terms_agree}{' '}
@@ -132,7 +118,7 @@ export default function Register() {
                             <Button
                                 type="submit"
                                 className="mt-2 w-full"
-                                tabIndex={7}
+                                tabIndex={6}
                                 data-test="register-user-button"
                                 disabled={processing || !acceptedTerms}
                             >
@@ -143,7 +129,7 @@ export default function Register() {
 
                         <div className="text-center text-sm text-muted-foreground">
                             {t.login_prompt}{' '}
-                            <TextLink href={login()} tabIndex={6}>
+                            <TextLink href={login()} tabIndex={7}>
                                 {t.btn_login_action}
                             </TextLink>
                         </div>

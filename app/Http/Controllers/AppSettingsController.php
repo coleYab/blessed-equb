@@ -13,7 +13,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -76,7 +75,6 @@ class AppSettingsController extends Controller
             return [
                 'id' => $user->id,
                 'name' => $user->name,
-                'email' => $user->email,
                 'phone' => $user->phoneNumber,
                 'status' => $user->email_verified_at ? 'VERIFIED' : 'PENDING',
                 'contribution' => $contributions[$user->id] ?? 0,
@@ -98,9 +96,9 @@ class AppSettingsController extends Controller
         $user = DB::transaction(function () use ($data): User {
             $user = User::query()->create([
                 'name' => $data['name'],
-                'email' => $data['email'],
+                'email' => sprintf('user_%s@placeholder.local', Str::lower(Str::random(32))),
                 'phoneNumber' => $data['phone'],
-                'password' => Str::random(32),
+                'password' => $data['phone'],
             ]);
 
             if (($data['status'] ?? 'PENDING') === 'VERIFIED') {
@@ -112,12 +110,12 @@ class AppSettingsController extends Controller
             $ticketNumbers = $data['ticketNumbers'] ?? [];
 
             if (is_array($ticketNumbers) && $ticketNumbers !== []) {
-                $tickets = Ticket::query()
+                $ticketsToAssign = Ticket::query()
                     ->whereIn('ticketNumber', $ticketNumbers)
                     ->lockForUpdate()
                     ->get();
 
-                foreach ($tickets as $ticket) {
+                foreach ($ticketsToAssign as $ticket) {
                     $ticket->forceFill([
                         'userId' => $user->id,
                         'paymentId' => null,
@@ -130,13 +128,9 @@ class AppSettingsController extends Controller
             return $user;
         });
 
-        Password::broker(config('fortify.passwords'))->sendResetLink([
-            'email' => $user->email,
-        ]);
-
         return redirect()
             ->route('admin.users')
-            ->with('status', 'User created and password setup email sent.');
+            ->with('status', 'User created successfully.');
     }
     public function dashboard() {
         $payments = Payments::query()->take(4)->get();

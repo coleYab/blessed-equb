@@ -63,7 +63,7 @@ export default function Prizes({ language = 'am', settings }: PrizesProps) {
                                 </div>
                                 <span className="text-xl font-bold tracking-wide text-amber-500 md:text-2xl">
                                     Blessed{' '}
-                                    <span className="text-amber-400">የመኪና ዕቁብ</span>
+                                    <span className="text-amber-400">ዕቁብ</span>
                                 </span>
                             </div>
 

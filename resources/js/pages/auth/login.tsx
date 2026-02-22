@@ -11,7 +11,7 @@ import { useLanguage } from '@/hooks/use-language';
 import AuthLayout from '@/layouts/auth-layout';
 import { register } from '@/routes';
 import { store } from '@/routes/login';
-import { request } from '@/routes/password';
+import request from '@/routes/password';
 
 type Props = {
     status?: string;
@@ -43,18 +43,18 @@ export default function Login({
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="email">{t.label_email}</Label>
+                                <Label htmlFor="phoneNumber">{t.label_phone}</Label>
                                 <Input
-                                    id="email"
-                                    type="email"
-                                    name="email"
+                                    id="phoneNumber"
+                                    type="tel"
+                                    name="phoneNumber"
                                     required
                                     autoFocus
                                     tabIndex={1}
-                                    autoComplete="email"
-                                    placeholder={t.placeholder_email}
+                                    autoComplete="tel"
+                                    placeholder={t.placeholder_phone}
                                 />
-                                <InputError message={errors.email} />
+                                <InputError message={errors.phoneNumber} />
                             </div>
 
                             <div className="grid gap-2">

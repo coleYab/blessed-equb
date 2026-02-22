@@ -56,7 +56,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 type UserRow = User & {
     banned: boolean;
-    email?: string;
 };
 
 interface PageProps {
@@ -79,7 +78,6 @@ export default function Users({
 
     const { data, setData, post, processing, errors, reset, clearErrors, transform } = useForm({
         name: '',
-        email: '',
         phone: '',
         status: 'PENDING' as UserRow['status'],
         joinedDate: new Date().toISOString().slice(0, 10),
@@ -138,7 +136,6 @@ export default function Users({
         reset();
         setData({
             name: '',
-            email: '',
             phone: '',
             status: 'PENDING',
             joinedDate: new Date().toISOString().slice(0, 10),
@@ -149,7 +146,7 @@ export default function Users({
     const saveUser = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!data.name || !data.email || !data.phone) {
+        if (!data.name || !data.phone) {
             return;
         }
 
@@ -426,7 +423,7 @@ export default function Users({
                                     {t.users.addNew}
                                 </DialogTitle>
                                 <DialogDescription>
-                                    Create a new user and email them a password setup link.
+                                    Create a new user.
                                 </DialogDescription>
                             </DialogHeader>
 
@@ -442,19 +439,6 @@ export default function Users({
                                             required
                                         />
                                         <InputError message={errors.name} />
-                                    </div>
-
-                                    <div className="space-y-2 sm:col-span-2">
-                                        <Label htmlFor="user-email">Email</Label>
-                                        <Input
-                                            id="user-email"
-                                            type="email"
-                                            value={data.email}
-                                            onChange={(e) => setData('email', e.target.value)}
-                                            className="rounded-xl"
-                                            required
-                                        />
-                                        <InputError message={errors.email} />
                                     </div>
 
                                     <div className="space-y-2">

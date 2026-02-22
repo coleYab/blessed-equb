@@ -3,7 +3,7 @@ import type { AppSettings } from "@/types/app";
 export const TRANSLATIONS = {
   en: {
     nav: { home: "Home", how: "How It Works", prizes: "Prizes", join: "Join Now", login: "Login", register: "Register", logout: "Logout", dashboard: "Dashboard", secure: "Secure Session", profile: "Profile" },
-    hero: { subtitle: "TO DRAW THIS CYCLES PRIZE:", subtitle_today: "TODAY ONE LUCKY PERSON WILL TAKE THE CAR", title1: "Drive Your Dream.", title2: "Secure Your Future.", desc: "Experience the future of saving with Ethiopia's premier digital Equb. We combine tradition with technology to turn your monthly contributions into the car of your dreams.", cta: "Start Saving Today", watch: "Watch Video", prize_label: "This Month's Prize", prize_value: "Value", prize_name: "BYD E2 Luxury 2025" },
+    hero: { subtitle: "TO DRAW THIS CYCLES PRIZE:", subtitle_today: "TODAY ONE LUCKY PERSON WILL TAKE THE CAR", title1: "Drive Your Dream.", title2: "Secure Your Future.", desc: "Experience the future of saving with Ethiopia's premier digital Equb. We combine tradition with technology to turn your monthly contributions into the car of your dreams.", cta: "Claim Your Lucky Number Today", watch: "Watch Video", prize_label: "This Month's Prize", prize_value: "Value", prize_name: "BYD E2 Luxury 2025" },
     stats: { members: "Active Members", cars: "Cars Delivered", pot: "Total Pot Value", trust: "Trust Score", taken: "Taken Numbers", lucky: "Lucky Numbers" },
     features: {
         heading_sub: "How It Works",
@@ -12,8 +12,8 @@ export const TRANSLATIONS = {
         desc: "We've digitized the traditional Equb system to make it secure, transparent, and easy to access from anywhere.",
         step1_title: "Register & Verify",
         step1_desc: "Create your secure account using your phone number.",
-        step2_title: "Contribute Monthly",
-        step2_desc: "Make your payments easily via Telebirr or CBE.",
+        step2_title: "Claim your lucky number",
+        step2_desc: "Choose your ticket after your payments easily via Telebirr or CBE.",
         step3_title: "Win & Drive",
         step3_desc: "Participate in our transparent monthly live draw."
     },
@@ -85,7 +85,7 @@ export const TRANSLATIONS = {
         status_pending: "Payment Pending",
         status_verified: "Verified Member",
         contribution: "My Contribution",
-        contribution_sub: "+5,000 this month",
+        contribution_sub: "this month",
         pot: "Group Pot",
         pot_sub: "Current Cycle Total",
         pot_users: "Contributing",
@@ -109,7 +109,7 @@ export const TRANSLATIONS = {
         select_ticket_desc: "Choose a number for the next draw.",
         confirm_ticket: "Confirm Number",
         my_ticket: "My Number",
-        ticket_saved: "Number Saved!",
+        ticket_saved: "Lucky Number Claimed!",
         ticket_instruction: "Green numbers are available.",
         change_method: "Change Method",
         confirm_paid: "I Have Paid",
@@ -134,7 +134,7 @@ export const TRANSLATIONS = {
                 content: "You must be at least 18 years old and a resident of Ethiopia to participate in draws and Equb cycles. Valid ID is required to claim prizes."
             },
             {
-                heading: "3. Payments & Savings",
+                heading: "3. Lucky Numbers & Claims",
                 content: "Members agree to make monthly payments according to their selected tier. Contributions are non-refundable once a cycle begins. Failure to pay may result in suspension."
             },
             {
@@ -158,7 +158,7 @@ export const TRANSLATIONS = {
   },
   am: {
     nav: { home: "መነሻ", how: "እንዴት ይሰራል", prizes: "ሽልማቶች", join: "ይመዝገቡ", login: "ይግቡ", register: "ይመዝገቡ", logout: "ውጣ", dashboard: "ዳሽቦርድ", secure: "ደህንነቱ የተጠበቀ", profile: "ፕሮፋይል" },
-    hero: { subtitle: "የዚህ ዙር እጣ ሊወጣ የቀረው ጊዜ:", subtitle_today: "ዛሬ አንድ እድለኛ ሰው መኪናውን ይረከባል", title1: "ህልምዎን ይንዱ።", title2: "ነገዎን ያረጋግጡ።", desc: "የቁጠባ ባህልን ከዘመናዊ ቴክኖሎጂ ጋር በማጣመር የህልም መኪናዎን ባለቤት የሚያደርግዎ የኢትዮጵያ ቀዳሚ ዲጂታል እቁብ።", cta: "ዛሬ መቆጠብ ይጀምሩ", watch: "ቪዲዮ ይመልከቱ", prize_label: "የዚህ ወር ሽልማት", prize_value: "ዋጋ", prize_name: "BYD E2 Luxury 2025" },
+    hero: { subtitle: "የዚህ ዙር እጣ ሊወጣ የቀረው ጊዜ:", subtitle_today: "ዛሬ አንድ እድለኛ ሰው መኪናውን ይረከባል", title1: "ህልምዎን ይንዱ።", title2: "ነገዎን ያረጋግጡ።", desc: "የቁጠባ ባህልን ከዘመናዊ ቴክኖሎጂ ጋር በማጣመር የህልም መኪናዎን ባለቤት የሚያደርግዎ የኢትዮጵያ ቀዳሚ ዲጂታል እቁብ።", cta: "የእድለኛ ቁጥርዎን ዛሬ ይያዙ", watch: "ቪዲዮ ይመልከቱ", prize_label: "የዚህ ወር ሽልማት", prize_value: "ዋጋ", prize_name: "BYD E2 Luxury 2025" },
     stats: { members: "ንቁ አባላት", cars: "የተሰጡ መኪኖች", pot: "ጠቅላላ የገንዘብ መጠን", trust: "የታማኝነት ነጥብ", taken: "የተያዙ ቁጥሮች", lucky: "እድለኛ ቁጥሮች" },
     features: {
         heading_sub: "እንዴት ይሰራል",
@@ -167,8 +167,8 @@ export const TRANSLATIONS = {
         desc: "ባህላዊውን የእቁብ ስርዓት ደህንነቱ የተጠበቀ፣ ግልጽ እና ከየትኛውም ቦታ ሆነው በቀላሉ የሚሳተፉበት አድርገን ዘምነነዋል።",
         step1_title: "ይመዝገቡ እና ያረጋግጡ",
         step1_desc: "ስልክ ቁጥርዎን በመጠቀም ደህንነቱ የተጠበቀ መለያ ይፍጠሩ።",
-        step2_title: "ወራዊ ክፍያ ይፈጽሙ",
-        step2_desc: "ክፍያዎን በቴሌብር ወይም በንግድ ባንክ በቀላሉ ይፈጽሙ።",
+        step2_title: "እድለኛ ቁጥርዎን ይምረጡ",
+        step2_desc: "ክፍያዎን በቀላሉ በቴሌቢር ወይም በ CBE በኩል ከፈጸሙ በኋላ ቲኬትዎን ይምረጡ።",
         step3_title: "ያሸንፉ እና ይንዱ",
         step3_desc: "በየወሩ በሚካሄደው ግልጽ የእጣ አወጣጥ ላይ ይሳተፉ።"
     },
@@ -240,7 +240,7 @@ export const TRANSLATIONS = {
         status_pending: "ክፍያ ይጠበቃል",
         status_verified: "የተረጋገጠ አባል",
         contribution: "የእኔ ቁጠባ",
-        contribution_sub: "+5,000 በዚህ ወር",
+        contribution_sub: "በዚህ ወር",
         pot: "የቡድን እቁብ",
         pot_sub: "የአሁን ዙር ጠቅላላ",
         pot_users: "አባላት",
@@ -264,7 +264,7 @@ export const TRANSLATIONS = {
         select_ticket_desc: "ለቀጣዩ እጣ የሚሆን ቁጥር ይምረጡ።",
         confirm_ticket: "ቁጥሩን አረጋግጥ",
         my_ticket: "የእኔ ቁጥር",
-        ticket_saved: "ቁጥሩ ተመዝግቧል!",
+        ticket_saved: "የእድለኛ ቁጥር ተያዙ!",
         ticket_instruction: "አረንጓዴ ቁጥሮች ክፍት ናቸው።",
         change_method: "ዘዴ ቀይር",
         confirm_paid: "ክፍያ ፈጽሚያለሁ",
@@ -289,7 +289,7 @@ export const TRANSLATIONS = {
                 content: "በእጣው እና በእቁብ ዙሮች ለመሳተፍ እድሜዎ ቢያንስ 18 ዓመት እና የኢትዮጵያ ነዋሪ መሆን አለብዎት። ሽልማቶችን ለመቀበል የሚሰራ መታወቂያ ያስፈልጋል።"
             },
             {
-                heading: "3. ክፍያዎች እና ቁጠባ",
+                heading: "3. የእድለኛ ቁጥሮች እና ያርግቶች",
                 content: "አባላት በተመረጠው እርከን መሰረት ወራዊ ክፍያ ለመፈጸም ይስማማሉ። የወር እቁብ ዑደቱ ከተጀመረ በኋላ የተከፈለ ገንዘብ ተመላሽ አይደረግም። ክፍያ አለመፈጸም ከአገልግሎት ሊያግድ ይችላል።"
             },
             {

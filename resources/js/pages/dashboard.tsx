@@ -1,7 +1,7 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
 import { Clock, CheckCircle, Bell, Video, ExternalLink, Upload, PlusCircle, Building, ChevronRight, Smartphone, ArrowLeft, Copy, PartyPopper, Search, XCircle, Lock, History, Trophy, Ticket } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { PRIZE_IMAGES, TRANSLATIONS } from '@/constants';
 import { useLanguage } from '@/hooks/use-language';
@@ -100,6 +100,12 @@ export default function Dashboard() {
     const [paymentReceipt, setPaymentReceipt] = useState<File | null>(null);
     const [paymentError, setPaymentError] = useState<string | null>(null);
 
+    const paymentMethodSectionRef = useRef<HTMLDivElement | null>(null);
+    const [shouldScrollToPaymentMethod, setShouldScrollToPaymentMethod] =
+        useState(false);
+    const [showPaymentMethodHighlight, setShowPaymentMethodHighlight] =
+        useState(false);
+
     const [selectedTempTicket, setSelectedTempTicket] = useState<number | null>(
         null,
     );
@@ -190,8 +196,41 @@ export default function Dashboard() {
         if (selectedTempTicket && user && user.id) {
             setShowTicketModal(false);
             setPaymentStep('METHOD');
+            setShouldScrollToPaymentMethod(true);
         }
     };
+
+    useEffect(() => {
+        if (!shouldScrollToPaymentMethod || paymentStep !== 'METHOD') {
+            return;
+        }
+
+        const el = paymentMethodSectionRef.current;
+        if (!el) {
+            return;
+        }
+
+        const raf = requestAnimationFrame(() => {
+            // Add a small delay to ensure the modal has fully closed and DOM has updated
+            setTimeout(() => {
+                el.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                });
+                setShowPaymentMethodHighlight(true);
+                setShouldScrollToPaymentMethod(false);
+
+                window.setTimeout(() => {
+                    setShowPaymentMethodHighlight(false);
+                }, 1800);
+            }, 300); // 300ms delay for mobile compatibility
+        });
+
+        return () => {
+            cancelAnimationFrame(raf);
+        };
+    }, [paymentStep, shouldScrollToPaymentMethod]);
 
     const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text);
@@ -712,7 +751,14 @@ export default function Dashboard() {
                                                     {/* STEP 1: METHOD SELECTION */}
                                                     {paymentStep ===
                                                         'METHOD' && (
-                                                        <div className="animate-fade-in-up">
+                                                        <div
+                                                            ref={paymentMethodSectionRef}
+                                                            className={`animate-fade-in-up pt-5 rounded-xl transition-shadow ${
+                                                                showPaymentMethodHighlight
+                                                                    ? 'ring-2 ring-emerald-400/70 shadow-[0_0_0_6px_rgba(52,211,153,0.12)]'
+                                                                    : ''
+                                                            }`}
+                                                        >
                                                             <div className="mb-3 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-center">
                                                                 <p className="mb-1 text-xs font-bold tracking-wider text-amber-400 uppercase">
                                                                     {language ===

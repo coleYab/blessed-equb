@@ -6,6 +6,7 @@ use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Models\RecentActivity;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
@@ -21,16 +22,16 @@ class CreateNewUser implements CreatesNewUsers
     public function create(array $input): User
     {
         Validator::make($input, [
-            ...$this->profileRules(),
-            'phone' => ['required', 'string', 'max:50'],
+            'name' => $this->nameRules(),
+            'phoneNumber' => $this->phoneNumberRules(),
             'terms' => ['accepted'],
             'password' => $this->passwordRules(),
         ])->validate();
 
         $user = User::create([
             'name' => $input['name'],
-            'email' => $input['email'],
-            'phoneNumber' => $input['phone'],
+            'email' => $this->generateUniqueEmail(),
+            'phoneNumber' => $input['phoneNumber'],
             'password' => $input['password'],
         ]);
 
@@ -49,5 +50,14 @@ class CreateNewUser implements CreatesNewUsers
         ]);
 
         return $user;
+    }
+
+    private function generateUniqueEmail(): string
+    {
+        do {
+            $email = sprintf('user_%s@placeholder.local', Str::lower(Str::random(32)));
+        } while (User::query()->where('email', $email)->exists());
+
+        return $email;
     }
 }

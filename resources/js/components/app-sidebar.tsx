@@ -155,7 +155,7 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                {(usePage().props.auth.user.is_admin === true) ?
+                {(usePage().props.auth.user.is_admin) ?
                     <NavFooter items={footerNavItems} className="mt-auto" />
                     : null
                 }
