@@ -1,6 +1,7 @@
 import { Trophy, Star } from 'lucide-react';
 
 import React from 'react';
+import { Button } from '@/components/ui/button';
 import { TRANSLATIONS } from '@/constants';
 import type { Language } from '@/types/app';
 
@@ -68,6 +69,35 @@ const SocialProofSection: React.FC<SocialProofSectionProps> = ({ language }) => 
                  </div>
               </div>
            ))}
+        </div>
+      </div>
+
+      <div className="mx-auto mt-10 max-w-3xl px-4 relative z-10">
+        <div className="rounded-2xl border border-emerald-700/50 bg-emerald-950/30 p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-50">
+                <span className="inline-flex h-2 w-2 rounded-full bg-amber-400" />
+                {t.license_trigger}
+              </div>
+              <div className="mt-2 text-sm leading-relaxed text-emerald-100">{t.license_description}</div>
+              {/* <div className="mt-2 text-xs text-emerald-200/80">{t.license_hint}</div> */}
+            </div>
+
+            <Button
+              asChild
+              variant="secondary"
+              className="bg-amber-500/15 text-amber-200 hover:bg-amber-500/25"
+            >
+              <a
+                href="/liscence.pdf"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {t.license_view}
+              </a>
+            </Button>
+          </div>
         </div>
       </div>
     </section>

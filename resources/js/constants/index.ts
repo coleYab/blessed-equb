@@ -20,7 +20,14 @@ export const TRANSLATIONS = {
     social_proof: {
         heading: "Built on Trust",
         subheading: "Join a community built on trust, transparency, and shared prosperity.",
-        winner_badge: "Win"
+        winner_badge: "Win",
+        license_trigger: "Licensed & Regulated",
+        license_description: "For transparency, we provide our official license details for public review.",
+        license_hint: "Opens in a new tab for viewing and download.",
+        license_view: "View License",
+        license_modal_title: "Official License",
+        license_modal_description: "This is an embedded view of our license document.",
+        license_iframe_title: "Blessed Equb License"
     },
     cta_section: {
         heading: "Ready to Drive Your Dream Car?",
@@ -175,7 +182,14 @@ export const TRANSLATIONS = {
     social_proof: {
         heading: "በታማኝነት የተገነባ",
         subheading: "በታማኝነት፣ በግልፅነት እና በጋራ ተጠቃሚነት የተገነባውን ማህበረሰብ ይቀላቀሉ።",
-        winner_badge: "አሸናፊ"
+        winner_badge: "አሸናፊ",
+        license_trigger: "ፈቃድ ያለው እና በህግ የሚተዳደር",
+        license_description: "ለግልፅነት ሲባል የመንግስት ፈቃዳችንን ለህዝብ እንዲመለከቱ እናቀርባለን።",
+        license_hint: "በአዲስ ትር ይከፈታል (ለመመልከት እና ለመውረድ)።",
+        license_view: "ፈቃዱን ይመልከቱ",
+        license_modal_title: "ይፋዊ ፈቃድ",
+        license_modal_description: "ይህ የፈቃዳችን ሰነድ በመመልከቻ ውስጥ የተቀረበ እይታ ነው።",
+        license_iframe_title: "የBlessed Equb ፈቃድ"
     },
     cta_section: {
         heading: "የህልም መኪናዎን ለመንዳት ዝግጁ ነዎት?",

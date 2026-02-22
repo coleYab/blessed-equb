@@ -2,7 +2,6 @@ import { Head, Link, router, usePage, useRemember } from '@inertiajs/react';
 import {
     CheckCircle,
     ChevronRight,
-    Gem,
     Globe,
     Lock,
     PartyPopper,
@@ -780,6 +779,7 @@ export default function Welcome() {
                         <Features language={language} />
                         <SocialProofSection language={language} />
 
+
                         <section
                             id="waitlist-section"
                             className="relative overflow-hidden bg-gradient-to-b from-stone-50 to-white py-24"
@@ -802,6 +802,78 @@ export default function Welcome() {
                                 </Link>
                             </div>
                         </section>
+
+                        <section className="relative overflow-hidden bg-gradient-to-b from-emerald-950 via-emerald-900 to-stone-50 py-24">
+                            <div className="pointer-events-none absolute inset-0 opacity-20">
+                                <div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-amber-400 blur-3xl" />
+                                <div className="absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-emerald-300 blur-3xl" />
+                            </div>
+
+                            <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 lg:grid-cols-2">
+                                <div>
+                                    <div className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-semibold tracking-wide text-white backdrop-blur">
+                                        {language === 'en' ? 'Story' : 'ታሪክ'}
+                                    </div>
+
+                                    <h2 className="mt-5 text-3xl font-extrabold leading-tight text-white sm:text-4xl">
+                                        {language === 'en'
+                                            ? 'Powered by Blessed Transformation'
+                                            : 'በብለስድ ትራንስፎርሜሽን የተደገፈ'}
+                                    </h2>
+
+                                    <p className="mt-6 max-w-xl text-sm leading-relaxed text-emerald-100/80">
+                                        {language === 'en'
+                                            ? 'A blessed transformation is turning your vision into your very own car.'
+                                            : 'Blessed Transformation — ሕልምዎን ወደ የራስዎ መኪና የሚቀየር እውነተኛ ጉዞ።'}
+                                    </p>
+                                </div>
+
+                                <div className="group relative">
+                                    <div className="absolute -inset-1 rounded-[2rem] bg-gradient-to-r from-amber-400/35 via-white/10 to-emerald-400/35 blur-2xl" />
+                                    <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-emerald-950/40 shadow-2xl backdrop-blur">
+                                        <div className="pointer-events-none absolute inset-0">
+                                            <div className="absolute -left-24 top-10 h-56 w-56 rounded-full bg-amber-400/25 blur-3xl" />
+                                            <div className="absolute -right-24 bottom-10 h-56 w-56 rounded-full bg-emerald-300/20 blur-3xl" />
+                                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_55%)]" />
+                                        </div>
+
+                                        <div className="relative aspect-video">
+                                            <video
+                                                className="h-full w-full object-cover"
+                                                src="/transformation.MP4"
+                                                autoPlay
+                                                loop
+                                                muted
+                                                playsInline
+                                                controls={false}
+                                                preload="metadata"
+                                            />
+
+                                            <div className="pointer-events-none absolute inset-0">
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                                                <div className="absolute -left-1/3 top-0 h-full w-2/3 -skew-x-12 bg-white/5 opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
+                                            </div>
+
+                                            {/* <div className="pointer-events-none absolute bottom-0 left-0 right-0 p-5">
+                                                <div className="inline-flex max-w-full flex-col gap-1 rounded-2xl border border-white/15 bg-black/25 px-5 py-4 text-white backdrop-blur">
+                                                    <div className="text-sm font-semibold">
+                                                        {language === 'en'
+                                                            ? 'Powered by Blessed Transformation'
+                                                            : 'በብለስድ ትራንስፎርሜሽን የተደገፈ'}
+                                                    </div>
+                                                    <div className="text-xs text-white/75">
+                                                        {language === 'en'
+                                                            ? 'A short glimpse of the story behind our mission.'
+                                                            : 'ከተልዕኮታችን ጀርባ ያለው የለውጥ ታሪክ አጭር ማሳያ።'}
+                                                    </div>
+                                                </div>
+                                            </div> */}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
                         <Footer language={language} />
                     </main>
                 </div>
