@@ -773,6 +773,21 @@ export default function Dashboard() {
                                                                     }
                                                                 </p>
                                                             </div>
+                                                            <div className="mb-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-center">
+                                                                <p className="mb-1 text-xs font-bold tracking-wider text-emerald-300 uppercase">
+                                                                    {language ===
+                                                                    'en'
+                                                                        ? 'Payment Amount'
+                                                                        : 'የክፍያ መጠን'}
+                                                                </p>
+                                                                <p className="text-2xl font-black text-emerald-300">
+                                                                    {paymentAmount.toLocaleString()}{' '}
+                                                                    {language ===
+                                                                    'en'
+                                                                        ? 'ETB'
+                                                                        : 'ብር'}
+                                                                </p>
+                                                            </div>
                                                             <div className="flex flex-col gap-2">
                                                                 <p className="mb-1 text-center text-xs text-stone-300">
                                                                     Select
@@ -796,7 +811,16 @@ export default function Dashboard() {
                                                                             t.pay_cbe
                                                                         }
                                                                     </span>
-                                                                    <ChevronRight className="h-4 w-4 text-purple-300 transition-transform group-hover:translate-x-1" />
+                                                                    <span className="flex items-center gap-2">
+                                                                        <span className="text-xs font-semibold text-purple-200">
+                                                                            {paymentAmount.toLocaleString()}{' '}
+                                                                            {language ===
+                                                                            'en'
+                                                                                ? 'ETB'
+                                                                                : 'ብር'}
+                                                                        </span>
+                                                                        <ChevronRight className="h-4 w-4 text-purple-300 transition-transform group-hover:translate-x-1" />
+                                                                    </span>
                                                                 </button>
                                                                 <button
                                                                     onClick={() => {
@@ -815,7 +839,16 @@ export default function Dashboard() {
                                                                             t.pay_telebirr
                                                                         }
                                                                     </span>
-                                                                    <ChevronRight className="h-4 w-4 text-blue-300 transition-transform group-hover:translate-x-1" />
+                                                                    <span className="flex items-center gap-2">
+                                                                        <span className="text-xs font-semibold text-blue-200">
+                                                                            {paymentAmount.toLocaleString()}{' '}
+                                                                            {language ===
+                                                                            'en'
+                                                                                ? 'ETB'
+                                                                                : 'ብር'}
+                                                                        </span>
+                                                                        <ChevronRight className="h-4 w-4 text-blue-300 transition-transform group-hover:translate-x-1" />
+                                                                    </span>
                                                                 </button>
                                                                 <button
                                                                     onClick={() =>
