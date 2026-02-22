@@ -136,6 +136,8 @@ export function AppSidebar() {
         },
     ];
 
+    const user = usePage().props.auth.user;
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -155,7 +157,7 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                {(usePage().props.auth.user.is_admin) ?
+                {(user.is_admin === '1' || user.is_admin === 1 || user.is_admin === true) ?
                     <NavFooter items={footerNavItems} className="mt-auto" />
                     : null
                 }

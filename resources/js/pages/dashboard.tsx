@@ -881,9 +881,7 @@ export default function Dashboard() {
                                                                             t.acc_name
                                                                         }
                                                                         :
-                                                                        Blessed
-                                                                        Digital
-                                                                        Equb
+                                                                        Letarik Tamrat Abera
                                                                     </p>
                                                                 </div>
                                                             ) : (
