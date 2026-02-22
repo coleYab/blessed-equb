@@ -915,9 +915,7 @@ export default function Dashboard() {
                                                                             t.acc_name
                                                                         }
                                                                         :
-                                                                        Blessed
-                                                                        Equb
-                                                                        Service
+                                                                        Letarik Tamrat Abera
                                                                     </p>
                                                                 </div>
                                                             )}
