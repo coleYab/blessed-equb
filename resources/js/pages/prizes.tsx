@@ -58,7 +58,7 @@ export default function Prizes({ language = 'am', settings }: PrizesProps) {
                                     <div className="rounded-lg bg-amber-700 p-2">
                                         <img src="/mainlogo.png" alt="Blessed Equb Logo" className="h-6 w-6 rounded-sm" />
                                     </div>
-                                    <span className="text-xl font-bold tracking-wide text-amber-500 md:text-2xl">
+                                    <span className="hidden md:block text-xl font-bold tracking-wide text-amber-500 md:text-2xl">
                                         Blessed{' '}
                                         <span className="text-amber-400">ዕቁብ</span>
                                     </span>

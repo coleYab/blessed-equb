@@ -302,7 +302,7 @@ export default function Welcome() {
                                 <div className="rounded-lg bg-amber-700 p-2">
                                     <img src="/mainlogo.png" alt="Blessed Equb Logo" className="h-6 w-6 rounded-sm" />
                                 </div>
-                                <span className="text-xl font-bold tracking-wide text-amber-500 md:text-2xl">
+                                <span className="hidden md:block text-xl font-bold tracking-wide text-amber-500 md:text-2xl">
                                     Blessed{' '}
                                     <span className="text-amber-400">ዕቁብ</span>
                                 </span>
@@ -419,7 +419,7 @@ export default function Welcome() {
                                         </Link>
                                         <a
                                         href={"https://youtube.com/shorts/A70Vsm03VF8?feature=share"}
-                                        target="_blank" 
+                                        target="_blank"
                                         className="flex flex-1 items-center justify-center rounded-lg border border-stone-600 bg-stone-800 px-4 py-4 text-sm font-bold whitespace-nowrap text-white transition-all hover:bg-stone-700 sm:w-auto sm:flex-none sm:px-8 sm:text-lg">
                                             <Play
                                                 className="mr-1 ml-1 h-4 w-4 sm:mr-2 sm:ml-2 sm:h-5 sm:w-5"

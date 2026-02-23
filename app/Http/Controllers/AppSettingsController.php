@@ -133,7 +133,7 @@ class AppSettingsController extends Controller
             ->with('status', 'User created successfully.');
     }
     public function dashboard() {
-        $payments = Payments::query()->take(4)->get();
+        $payments = Payments::query()->where('status', 'PENDING')->take(4)->get();
 
         $paymentsVerified = Payments::query()
             ->where('status', 'APPROVED')
