@@ -833,7 +833,7 @@ export default function Welcome() {
                                     <p className="mt-6 max-w-xl text-sm leading-relaxed text-emerald-100/80">
                                         {language === 'en'
                                             ? 'Blessed has gained knowledge by transforming our members body in the past, and now we has come beyond our body to bring blessings to the fortunate.'
-                                            : 'ብለስድ ከዚህ በፊት ሰዉነት በመቀየር እዉቆናን ያተረፈ ሲሆን አሁን ደግሞ ከሰዉነት ባሻገር ለእድለኞች በረከትን ይዞላቹ መቷል።'}
+                                            : 'ብለስድ ከዚህ በፊት ሰዉነት በመቀየር እዉቅናን ያተረፈ ሲሆን አሁን ደግሞ ከሰዉነት ባሻገር ለእድለኞች በረከትን ይዞላቹ መቷል።'}
                                     </p>
                                 </div>
 
