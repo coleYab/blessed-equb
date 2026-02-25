@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Inertia::share('settings', function() {
+        Inertia::share('settings', function () {
             $settings = AppSetting::first();
 
             if (! $settings) {

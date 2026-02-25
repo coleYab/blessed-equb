@@ -1,11 +1,18 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { Calendar, Plus, Save, Ticket, Trophy,  X } from 'lucide-react';
 import { useState } from 'react';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { ADMIN_TRANSLATIONS, PRIZE_IMAGES } from '@/constants';
 import { useLanguage } from '@/hooks/use-language';
 import AppLayout from '@/layouts/app-layout';
 import { update as updateSettings } from '@/routes/admin/settings';
-import type { BreadcrumbItem } from '@/types';
+import type { BreadcrumbItem, User } from '@/types';
 import type {  AppSettings } from '@/types/app';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -42,11 +49,27 @@ interface Ticket {
 
 interface PageProps {
     tickets: Ticket[];
+    users: User[];
 }
 
-export default function Competition({ tickets } : PageProps) {
+type TicketPaymentPayload = {
+    ticketId: number;
+    payment: null | {
+        id: string;
+        userId: number;
+        userName: string;
+        userPhone: string;
+        amount: number;
+        requestedTicket: number | null;
+        receiptUrl: string;
+        status: string;
+        createdAt: string | null;
+    };
+};
+
+export default function Competition({ tickets, users } : PageProps) {
     const settings = usePage().props.settings as AppSettings;
-    // eslint-disable-next-line react-hooks/immutability
+     
     settings.prizeImages = PRIZE_IMAGES;
     const [localSettings, setLocalSettings] =
     useState<AppSettings>(settings);
@@ -54,6 +77,27 @@ export default function Competition({ tickets } : PageProps) {
     useState<'settings' | 'tickets'>('settings');
     const [ticketSearch, setTicketSearch] = useState('');
     const [newImageUrl, setNewImageUrl] = useState('');
+
+    const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
+    const [paymentLoading, setPaymentLoading] = useState(false);
+    const [paymentError, setPaymentError] = useState<string | null>(null);
+    const [paymentTicket, setPaymentTicket] = useState<Ticket | null>(null);
+    const [paymentPayload, setPaymentPayload] = useState<TicketPaymentPayload | null>(null);
+
+    const normalizedTicketSearch = ticketSearch.trim().toLowerCase();
+    const filteredTickets = normalizedTicketSearch === ''
+        ? tickets
+        : tickets.filter((ticket) => {
+            const userName = ticket.userId
+                ? (users.find((u) => u.id === ticket.userId)?.name ?? '')
+                : '';
+
+            return (
+                `${ticket.id}`.includes(normalizedTicketSearch) ||
+                `${ticket.ticketNumber}`.includes(normalizedTicketSearch) ||
+                userName.toLowerCase().includes(normalizedTicketSearch)
+            );
+        });
 
     const [ethDate, setEthDate] = useState({
         year: new Date().getFullYear(),
@@ -146,7 +190,7 @@ export default function Competition({ tickets } : PageProps) {
 
     const handleExportTickets = () => {
         const headers = 'Ticket ID,Lucky Number,User ID,Cycle\n';
-        const rows = tickets.map((t)=>`${t.id},${t.ticketNumber},"${t.userId}",${1}`).join('\n');
+        const rows = filteredTickets.map((t)=>`${t.id},${t.ticketNumber},"${t.userId}",${1}`).join('\n');
         const csvContent = 'data:text/csv;charset=utf-8,' + headers + rows;
         const encodedUri = encodeURI(csvContent);
 
@@ -165,6 +209,34 @@ export default function Competition({ tickets } : PageProps) {
             'Export Successful',
             'CSV exported successfully.',
         );
+    };
+
+    const openPaymentDialog = async (ticket: Ticket): Promise<void> => {
+        setPaymentDialogOpen(true);
+        setPaymentTicket(ticket);
+        setPaymentPayload(null);
+        setPaymentError(null);
+        setPaymentLoading(true);
+
+        try {
+            const res = await fetch(`/admin/tickets/${ticket.id}/payment`, {
+                headers: {
+                    Accept: 'application/json',
+                },
+            });
+
+            if (!res.ok) {
+                throw new Error(`Request failed (${res.status})`);
+            }
+
+            const json = (await res.json()) as TicketPaymentPayload;
+            setPaymentPayload(json);
+        } catch (e) {
+            const message = e instanceof Error ? e.message : 'Request failed';
+            setPaymentError(message);
+        } finally {
+            setPaymentLoading(false);
+        }
     };
 
     return (
@@ -434,7 +506,7 @@ export default function Competition({ tickets } : PageProps) {
                                 <div className="relative flex-grow md:w-64">
                                     <input
                                         type="text"
-                                        placeholder="Search by name or ticket number..."
+                                        placeholder="Search by user name, ticket #, or ticket id..."
                                         value={ticketSearch}
                                         onChange={(e) =>
                                             setTicketSearch(e.target.value)
@@ -456,6 +528,9 @@ export default function Competition({ tickets } : PageProps) {
                                         <thead className="sticky top-0 z-10 bg-stone-50 text-xs text-stone-500 uppercase shadow-sm">
                                             <tr>
                                                 <th className="px-6 py-3">
+                                                    Ticket ID
+                                                </th>
+                                                <th className="px-6 py-3">
                                                     {t.users.ticket}
                                                 </th>
                                                 <th className="px-6 py-3">
@@ -464,34 +539,63 @@ export default function Competition({ tickets } : PageProps) {
                                                 <th className="px-6 py-3">
                                                     {t.users.status}
                                                 </th>
+                                                <th className="px-6 py-3">
+                                                    Actions
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-stone-100">
-                                            {tickets.length > 0 ? (
-                                                tickets.map((t) => (
-                                                    <tr key={t.id}>
-                                                        <td className="px-6 py-4 font-mono font-bold">
-                                                            #{t.ticketNumber}
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                            {t.userId || 10}
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                            <span
-                                                                className={`rounded px-2 py-1 text-xs font-bold ${ t.status === 'AVAILABLE' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }`} >
-                                                                {t.status}
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                ))
+                                            {filteredTickets.length > 0 ? (
+                                                filteredTickets.map((t) => {
+                                                    const userName = t.userId
+                                                        ? (users.find((u) => u.id === t.userId)?.name ?? '')
+                                                        : '';
+
+                                                    return (
+                                                        <tr key={t.id}>
+                                                            <td className="px-6 py-4 font-mono text-xs font-bold text-stone-700">
+                                                                {t.id}
+                                                            </td>
+                                                            <td className="px-6 py-4 font-mono font-bold">
+                                                                #{t.ticketNumber}
+                                                            </td>
+                                                            <td className="px-6 py-4">
+                                                                <div className="flex flex-col">
+                                                                    <span className="font-bold text-stone-800">
+                                                                        {userName !== '' ? userName : '-'}
+                                                                    </span>
+                                                                    {t.userId ? (
+                                                                        <span className="text-xs text-stone-500">
+                                                                            #{t.userId}
+                                                                        </span>
+                                                                    ) : null}
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-6 py-4">
+                                                                <span
+                                                                    className={`rounded px-2 py-1 text-xs font-bold ${ t.status === 'AVAILABLE' ? 'bg-emerald-100 text-emerald-800' : t.status === 'RESERVED' ? 'bg-amber-100 text-amber-800' : 'bg-sky-100 text-sky-800' }`} >
+                                                                    {t.status}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-6 py-4">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => openPaymentDialog(t)}
+                                                                    className="rounded-lg bg-stone-800 px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-stone-700"
+                                                                >
+                                                                    Show payment
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })
                                             ) : (
                                                     <tr>
                                                         <td
-                                                            colSpan={3}
+                                                            colSpan={8}
                                                             className="px-6 py-8 text-center text-stone-500"
                                                         >
-                                                            No verified tickets
-                                                            found in this cycle.
+                                                            No tickets found.
                                                         </td>
                                                     </tr>
                                                 )}
@@ -499,6 +603,74 @@ export default function Competition({ tickets } : PageProps) {
                                     </table>
                                 </div>
                             </div>
+
+                            <Dialog open={paymentDialogOpen} onOpenChange={setPaymentDialogOpen}>
+                                <DialogContent className="sm:max-w-2xl">
+                                    <DialogHeader>
+                                        <DialogTitle>
+                                            Payment details
+                                        </DialogTitle>
+                                        <DialogDescription>
+                                            {paymentTicket ? `Ticket #${paymentTicket.ticketNumber} (ID ${paymentTicket.id})` : ''}
+                                        </DialogDescription>
+                                    </DialogHeader>
+
+                                    {paymentLoading ? (
+                                        <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm text-stone-600">
+                                            Loading...
+                                        </div>
+                                    ) : paymentError ? (
+                                        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                                            {paymentError}
+                                        </div>
+                                    ) : paymentPayload?.payment ? (
+                                        <div className="space-y-3 text-sm">
+                                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                                <div className="rounded-lg border border-stone-200 bg-white p-3">
+                                                    <div className="text-xs font-bold text-stone-500 uppercase">Payment ID</div>
+                                                    <div className="mt-1 font-mono font-bold text-stone-800">{paymentPayload.payment.id}</div>
+                                                </div>
+                                                <div className="rounded-lg border border-stone-200 bg-white p-3">
+                                                    <div className="text-xs font-bold text-stone-500 uppercase">Status</div>
+                                                    <div className="mt-1 font-mono font-bold text-stone-800">{paymentPayload.payment.status}</div>
+                                                </div>
+                                                <div className="rounded-lg border border-stone-200 bg-white p-3">
+                                                    <div className="text-xs font-bold text-stone-500 uppercase">User</div>
+                                                    <div className="mt-1 font-bold text-stone-800">{paymentPayload.payment.userName}</div>
+                                                    <div className="text-xs text-stone-500">#{paymentPayload.payment.userId}</div>
+                                                </div>
+                                                <div className="rounded-lg border border-stone-200 bg-white p-3">
+                                                    <div className="text-xs font-bold text-stone-500 uppercase">Phone</div>
+                                                    <div className="mt-1 font-mono font-bold text-stone-800">{paymentPayload.payment.userPhone}</div>
+                                                </div>
+                                                <div className="rounded-lg border border-stone-200 bg-white p-3">
+                                                    <div className="text-xs font-bold text-stone-500 uppercase">Amount</div>
+                                                    <div className="mt-1 font-mono font-bold text-stone-800">{paymentPayload.payment.amount}</div>
+                                                </div>
+                                                <div className="rounded-lg border border-stone-200 bg-white p-3">
+                                                    <div className="text-xs font-bold text-stone-500 uppercase">Created</div>
+                                                    <div className="mt-1 font-mono font-bold text-stone-800">{paymentPayload.payment.createdAt ?? '-'}</div>
+                                                </div>
+                                            </div>
+
+                                            {paymentPayload.payment.receiptUrl ? (
+                                                <a
+                                                    href={paymentPayload.payment.receiptUrl}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="inline-flex rounded-lg bg-emerald-100 px-3 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-200"
+                                                >
+                                                    View receipt
+                                                </a>
+                                            ) : null}
+                                        </div>
+                                    ) : (
+                                        <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm text-stone-700">
+                                            Reserved by admin dashboard.
+                                        </div>
+                                    )}
+                                </DialogContent>
+                            </Dialog>
                         </div>
                     )}
                 </div>

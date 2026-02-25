@@ -5,17 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\AppNotification;
 use App\Models\AppNotificationRead;
 use App\Models\AppSetting;
+use App\Models\Payments;
 use App\Models\RecentActivity;
 use App\Models\Ticket;
-use App\Models\Payments;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 use Inertia\Response;
 
 class TicketController extends Controller
 {
-
     public function dashboard(Request $request): Response
     {
         $user = $request->user();
@@ -171,7 +170,7 @@ class TicketController extends Controller
     }
 
     // Show tickets for the logged-in user
-    public function tickets() : Response
+    public function tickets(): Response
     {
         $tickets = Ticket::where('userId', Auth::user()->id)
             ->latest()
@@ -206,7 +205,7 @@ class TicketController extends Controller
             ->lockForUpdate()
             ->first();
 
-        if (!$ticket) {
+        if (! $ticket) {
             return back()->with('error', 'This ticket number is not available.');
         }
 
@@ -225,7 +224,7 @@ class TicketController extends Controller
     {
         $ticket = Ticket::findOrFail($id);
 
-        if (!Auth::user()->is_admin) {
+        if (! Auth::user()->is_admin) {
             abort(403);
         }
 
@@ -242,7 +241,7 @@ class TicketController extends Controller
     // Admin view all tickets
     public function adminTickets()
     {
-        if (!Auth::user()->is_admin) {
+        if (! Auth::user()->is_admin) {
             abort(403);
         }
 
@@ -256,7 +255,7 @@ class TicketController extends Controller
     // Admin approves ticket after payment approved
     public function approveTickets(Payments $payment)
     {
-        if (!Auth::user()->is_admin) {
+        if (! Auth::user()->is_admin) {
             abort(403);
         }
 

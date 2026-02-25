@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Admin\AdminNotificationStoreRequest;
 use App\Http\Requests\Admin\AdminSettingsUpdateRequest;
 use App\Http\Requests\Admin\AdminUserStoreRequest;
-use App\Http\Requests\Admin\AdminNotificationStoreRequest;
 use App\Models\AppNotification;
 use App\Models\AppSetting;
 use App\Models\Payments;
@@ -51,10 +51,10 @@ class AppSettingsController extends Controller
         return redirect()->route('admin.settings')->with('status', 'Settings saved successfully.');
     }
 
-    public function prize() {
+    public function prize()
+    {
         return Inertia::render('admin/prizes', []);
     }
-
 
     public function user()
     {
@@ -63,7 +63,6 @@ class AppSettingsController extends Controller
             ->select('userId', DB::raw('SUM(amount) as total'))
             ->groupBy('userId')
             ->pluck('total', 'userId');
-
 
         // Approved tickets per user (SQLite-compatible)
         $tickets = Ticket::where('status', 'SOLD')
@@ -132,7 +131,9 @@ class AppSettingsController extends Controller
             ->route('admin.users')
             ->with('status', 'User created successfully.');
     }
-    public function dashboard() {
+
+    public function dashboard()
+    {
         $payments = Payments::query()->where('status', 'PENDING')->take(4)->get();
 
         $paymentsVerified = Payments::query()
@@ -160,15 +161,22 @@ class AppSettingsController extends Controller
         ]);
     }
 
-    public function cycle() {
+    public function cycle()
+    {
         // $tickets = Ticket::take(10)->get();
         $tickets = Ticket::query()->orderBy('ticketNumber', 'asc')->where('status', 'SOLD')->get();
+        $users = User::get();
+        $payments = Payments::get();
+
         return Inertia::render('admin/competitions', [
+            'users' => $users,
             'tickets' => $tickets,
+            'paymnets' => $payments,
         ]);
     }
 
-    public function payments() {
+    public function payments()
+    {
         return Inertia::render('admin/payments', []);
     }
 

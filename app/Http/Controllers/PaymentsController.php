@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payments;
-use App\Models\Ticket;
 use App\Models\RecentActivity;
+use App\Models\Ticket;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class PaymentsController extends Controller
 {
@@ -33,9 +34,9 @@ class PaymentsController extends Controller
                 ];
             });
 
-            return Inertia::render('mypayments', [
-                'payments' => $payments
-            ]);
+        return Inertia::render('mypayments', [
+            'payments' => $payments,
+        ]);
     }
 
     public function adminpayments()
@@ -43,7 +44,7 @@ class PaymentsController extends Controller
         $payments = Payments::latest()->get();
 
         return Inertia::render('admin/payments', [
-            'paymentRequest' => $payments
+            'paymentRequest' => $payments,
         ]);
     }
 
@@ -59,7 +60,7 @@ class PaymentsController extends Controller
         $path = $request->file('receipt')->store('receipts', 'public');
 
         $user = Auth::user();
-        $receiptUrl = '/storage/' . $path;
+        $receiptUrl = '/storage/'.$path;
 
         try {
             $payment = DB::transaction(function () use ($request, $user, $receiptUrl) {
@@ -141,7 +142,7 @@ class PaymentsController extends Controller
             // Delete old receipt
             Storage::disk('public')->delete(str_replace('/storage/', '', $payment->receiptUrl));
             $path = $request->file('receipt')->store('receipts', 'public');
-            $payment->receiptUrl = '/storage/' . $path;
+            $payment->receiptUrl = '/storage/'.$path;
         }
 
         $payment->amount = 2000;
@@ -154,12 +155,12 @@ class PaymentsController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $user = Auth::user();
-        if (!$user->is_admin) {
+        if (! $user->is_admin) {
             abort(403);
         }
 
         $request->validate([
-            'status' => 'required|in:APPROVED,REJECTED'
+            'status' => 'required|in:APPROVED,REJECTED',
         ]);
 
         $payment = Payments::findOrFail($id);
@@ -252,5 +253,32 @@ class PaymentsController extends Controller
         Storage::disk('public')->delete(str_replace('/storage/', '', $payment->receiptUrl));
 
         return redirect()->route('mypayments')->with('success', 'Payment deleted successfully.');
+    }
+
+    public function showForTicket(Ticket $ticket): JsonResponse
+    {
+        $payment = $ticket->payment;
+
+        if (! $payment) {
+            return response()->json([
+                'ticketId' => $ticket->id,
+                'payment' => null,
+            ]);
+        }
+
+        return response()->json([
+            'ticketId' => $ticket->id,
+            'payment' => [
+                'id' => (string) $payment->id,
+                'userId' => $payment->userId,
+                'userName' => $payment->userName,
+                'userPhone' => $payment->userPhone,
+                'amount' => (float) $payment->amount,
+                'requestedTicket' => $payment->requestedTicket,
+                'receiptUrl' => $payment->receiptUrl,
+                'status' => $payment->status,
+                'createdAt' => $payment->created_at?->toIso8601String(),
+            ],
+        ]);
     }
 }

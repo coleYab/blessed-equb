@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             // User relationship
-            $table->foreignId('userId') ->constrained('users') ->onDelete('cascade');
+            $table->foreignId('userId')->constrained('users')->onDelete('cascade');
 
             // Payment details
             $table->string('userName');

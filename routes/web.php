@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\TicketController;
-use App\Http\Controllers\PaymentsController;
-use App\Http\Controllers\AppSettingsController;
-use App\Http\Controllers\AppNotificationReadController;
-use App\Http\Controllers\RecentActivityController;
 use App\Http\Controllers\Admin\WinnerController;
+use App\Http\Controllers\AppNotificationReadController;
+use App\Http\Controllers\AppSettingsController;
+use App\Http\Controllers\PaymentsController;
+use App\Http\Controllers\RecentActivityController;
+use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -35,7 +35,6 @@ Route::get('/terms', function () {
 Route::get('/privacy', function () {
     return Inertia::render('privacy');
 })->name('privacy');
-
 
 Route::get('dashboard', [TicketController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
@@ -68,6 +67,9 @@ Route::prefix('admin')
         Route::get('payments', [PaymentsController::class, 'adminpayments'])->name('admin.payments');
         Route::put('payments/{id}/status', [PaymentsController::class, 'updateStatus'])->name('payments.updateStatus');
 
+        Route::get('tickets/{ticket}/payment', [PaymentsController::class, 'showForTicket'])
+            ->name('admin.tickets.payment');
+
         Route::post('winners/announce', [WinnerController::class, 'announce']);
     });
 
@@ -84,7 +86,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('user.notifications.read-all');
 });
 
-
 // this are the normal routes
 Route::get('myticket', [TicketController::class, 'tickets'])->middleware(['auth', 'verified'])->name('user.mytickets');
 Route::get('mycycle', [TicketController::class, 'mycycle'])->middleware(['auth', 'verified'])->name('user.mycycle');
@@ -92,4 +93,4 @@ Route::get('mycycle', [TicketController::class, 'mycycle'])->middleware(['auth',
 Route::get('mywinnings', [TicketController::class, 'mywinnings'])->middleware(['auth', 'verified'])->name('user.mywinnings');
 Route::get('notifications', [TicketController::class, 'notifications'])->middleware(['auth', 'verified'])->name('user.mynotifications');
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

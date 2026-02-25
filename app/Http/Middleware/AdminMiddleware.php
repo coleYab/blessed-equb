@@ -20,6 +20,6 @@ class AdminMiddleware
             return $next($request);
         }
 
-        abort(403, "Forbidden Resource");
+        abort(403, 'Forbidden Resource');
     }
 }

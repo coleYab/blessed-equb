@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\RecentActivity;
-use Illuminate\Pagination\Cursor;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\Cursor;
 
 class RecentActivityController extends Controller
 {

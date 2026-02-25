@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\AppSetting;
 use App\Models\Payments;
 use App\Models\RecentActivity;
 use App\Models\Ticket;
-use App\Models\AppSetting;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-         AppSetting::create([
+        AppSetting::create([
             'cycle' => 1,
             'days_remaining' => 7,
             'draw_date' => now()->addDays(7),

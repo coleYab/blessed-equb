@@ -14,8 +14,7 @@ class WinnerAnnounced extends Notification implements ShouldQueue
 
     public function __construct(
         public Winner $winner,
-    ) {
-    }
+    ) {}
 
     /**
      * Get the notification's delivery channels.

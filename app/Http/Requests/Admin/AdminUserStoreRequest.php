@@ -45,7 +45,7 @@ class AdminUserStoreRequest extends FormRequest
                 ->all();
 
             if ($takenTickets !== []) {
-                $validator->errors()->add('ticketNumbers', 'Some ticket numbers are not available: ' . implode(', ', $takenTickets));
+                $validator->errors()->add('ticketNumbers', 'Some ticket numbers are not available: '.implode(', ', $takenTickets));
             }
         });
     }

@@ -96,7 +96,7 @@ export default function Dashboard() {
     const [paymentStep, setPaymentStep] = useState<PaymentStep>('IDLE');
     const [showTicketModal, setShowTicketModal] = useState(false);
     const [showWinnerCelebration, setShowWinnerCelebration] = useState(true);
-    const [paymentAmount, setPaymentAmount] = useState<number>(2000);
+    const paymentAmount = 2000;
     const [paymentReceipt, setPaymentReceipt] = useState<File | null>(null);
     const [paymentError, setPaymentError] = useState<string | null>(null);
 

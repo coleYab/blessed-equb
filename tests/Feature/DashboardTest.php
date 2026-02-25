@@ -1,8 +1,8 @@
 <?php
 
+use App\Models\RecentActivity;
 use App\Models\Ticket;
 use App\Models\User;
-use App\Models\RecentActivity;
 use Inertia\Testing\AssertableInertia as Assert;
 
 test('guests are redirected to the login page', function () {

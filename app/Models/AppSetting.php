@@ -9,8 +9,8 @@ class AppSetting extends Model
 {
     use HasFactory;
 
-
     protected $table = 'app_settings';
+
     protected $fillable = [
         'cycle',
         'days_remaining',

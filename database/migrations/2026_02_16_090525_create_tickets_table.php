@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreignId('paymentId')->nullable();
 
             // Ticket status
-            $table->enum('status', [ 'AVAILABLE', 'RESERVED', 'SOLD' ])->default('AVAILABLE');
+            $table->enum('status', ['AVAILABLE', 'RESERVED', 'SOLD'])->default('AVAILABLE');
 
             $table->timestamp('reservedAt')->nullable();
 
