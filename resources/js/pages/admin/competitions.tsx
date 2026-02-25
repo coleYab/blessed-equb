@@ -89,7 +89,7 @@ export default function Competition({ tickets, users } : PageProps) {
         ? tickets
         : tickets.filter((ticket) => {
             const userName = ticket.userId
-                ? (users.find((u) => u.id === ticket.userId)?.name ?? '')
+                ? (users.find((u) => `${u.id}` === `${ticket.userId}`)?.name ?? '')
                 : '';
 
             return (
@@ -548,7 +548,7 @@ export default function Competition({ tickets, users } : PageProps) {
                                             {filteredTickets.length > 0 ? (
                                                 filteredTickets.map((t) => {
                                                     const userName = t.userId
-                                                        ? (users.find((u) => u.id === t.userId)?.name ?? '')
+                                                        ? (users.find((u) => `${u.id}` === `${t.userId}`)?.name ?? '')
                                                         : '';
 
                                                     return (
