@@ -1,6 +1,5 @@
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import {
-    Ban,
     CheckCircle,
     Clock,
     Plus,
@@ -181,6 +180,17 @@ export default function Users({
 
     const applyConfirmAction = () => {
         if (!selectedUser) {
+            return;
+        }
+
+        if (confirmType === 'DELETE') {
+            router.delete(`/admin/users/${selectedUser.id}`, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setConfirmOpen(false);
+                    setSelectedUser(null);
+                },
+            });
             return;
         }
 
@@ -379,25 +389,6 @@ export default function Users({
                                                         </div>
                                                     </CardContent>
                                                     <CardFooter className="flex flex-col gap-2 border-t bg-white p-4">
-                                                        {user.banned ? (
-                                                            <Button
-                                                                variant="secondary"
-                                                                className="w-full rounded-xl"
-                                                                onClick={() => openConfirm('UNBAN', user)}
-                                                            >
-                                                                Unban user
-                                                            </Button>
-                                                        ) : (
-                                                            <Button
-                                                                variant="destructive"
-                                                                className="w-full rounded-xl"
-                                                                onClick={() => openConfirm('BAN', user)}
-                                                            >
-                                                                <Ban className="mr-2 h-4 w-4" />
-                                                                Ban user
-                                                            </Button>
-                                                        )}
-
                                                         <Button
                                                             variant="destructive"
                                                             className="w-full rounded-xl"

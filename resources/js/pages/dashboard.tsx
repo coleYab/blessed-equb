@@ -1026,7 +1026,7 @@ export default function Dashboard() {
                                                                 </p>
                                                                 <input
                                                                     type="file"
-                                                                    accept="image/png,image/jpeg,image/jpg"
+                                                                    accept="image/*"
                                                                     onChange={(e) =>
                                                                         setPaymentReceipt(
                                                                             e.target

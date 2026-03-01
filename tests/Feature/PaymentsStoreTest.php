@@ -40,3 +40,28 @@ it('stores a payment request with receipt upload', function () {
 
     Storage::disk('public')->assertExists(str_replace('/storage/', '', $payment->receiptUrl));
 });
+
+it('updates a payment request with a webp receipt upload', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+
+    $payment = Payments::factory()->create([
+        'userId' => $user->id,
+        'status' => 'PENDING',
+        'receiptUrl' => '/storage/receipts/old.png',
+    ]);
+
+    $response = $this->actingAs($user)->put(route('payments.update', ['id' => $payment->id]), [
+        'amount' => 5000,
+        'requestedTicket' => 12,
+        'receipt' => UploadedFile::fake()->image('receipt.webp', 1200, 800),
+    ]);
+
+    $response->assertRedirect(route('mypayments'));
+
+    $payment->refresh();
+
+    expect($payment->receiptUrl)->toStartWith('/storage/receipts/');
+    Storage::disk('public')->assertExists(str_replace('/storage/', '', $payment->receiptUrl));
+});

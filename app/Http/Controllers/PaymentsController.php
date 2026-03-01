@@ -53,7 +53,7 @@ class PaymentsController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'requestedTicket' => 'required|integer|min:1',
-            'receipt' => 'required|image|mimes:jpg,jpeg,png|max:10000',
+            'receipt' => 'required|image|max:10000',
         ]);
 
         // Upload Image
@@ -135,7 +135,7 @@ class PaymentsController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'requestedTicket' => 'required|integer|min:1',
-            'receipt' => 'nullable|image|mimes:jpg,jpeg,png|max:10000',
+            'receipt' => 'nullable|image|max:10000',
         ]);
 
         if ($request->hasFile('receipt')) {

@@ -132,6 +132,26 @@ class AppSettingsController extends Controller
             ->with('status', 'User created successfully.');
     }
 
+    public function usersDestroy(User $user): RedirectResponse
+    {
+        DB::transaction(function () use ($user): void {
+            Ticket::query()
+                ->where('userId', $user->id)
+                ->update([
+                    'userId' => null,
+                    'paymentId' => null,
+                    'reservedAt' => null,
+                    'status' => 'AVAILABLE',
+                ]);
+
+            $user->delete();
+        });
+
+        return redirect()
+            ->route('admin.users')
+            ->with('status', 'User deleted successfully.');
+    }
+
     public function dashboard()
     {
         $payments = Payments::query()->where('status', 'PENDING')->take(4)->get();

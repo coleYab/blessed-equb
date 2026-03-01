@@ -111,3 +111,46 @@ test('guests cannot access admin users', function () {
     $this->get(route('admin.users'))->assertRedirect(route('login'));
     $this->post(route('admin.users.store'))->assertRedirect(route('login'));
 });
+
+test('admin can delete a user and their tickets are reset to available', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+    $user = User::factory()->create(['is_admin' => false]);
+
+    $ticket = Ticket::factory()->create([
+        'userId' => $user->id,
+        'status' => 'SOLD',
+    ]);
+
+    $response = $this
+        ->actingAs($admin)
+        ->delete(route('admin.users.destroy', $user));
+
+    $response
+        ->assertSessionHasNoErrors()
+        ->assertSessionHas('status', 'User deleted successfully.')
+        ->assertRedirect(route('admin.users'));
+
+    expect(User::query()->whereKey($user->id)->exists())->toBeFalse();
+
+    $ticket->refresh();
+    expect($ticket->userId)->toBeNull();
+    expect($ticket->status)->toBe('AVAILABLE');
+});
+
+test('non-admin authenticated users cannot delete users via admin endpoint', function () {
+    $nonAdmin = User::factory()->create(['is_admin' => false]);
+    $user = User::factory()->create(['is_admin' => false]);
+
+    $this
+        ->actingAs($nonAdmin)
+        ->delete(route('admin.users.destroy', $user))
+        ->assertForbidden();
+});
+
+test('guests cannot delete users via admin endpoint', function () {
+    $user = User::factory()->create(['is_admin' => false]);
+
+    $this
+        ->delete(route('admin.users.destroy', $user))
+        ->assertRedirect(route('login'));
+});
