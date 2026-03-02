@@ -23,6 +23,7 @@ type TicketBoardItem = { number: number; taken: boolean };
 
 type TicketBoardPayload = {
     data: TicketBoardItem[];
+    prevCursor?: string | null;
     nextCursor: string | null;
 };
 
@@ -75,6 +76,10 @@ export default function Welcome() {
         initialTicketBoard?.data ?? [],
         'welcome.ticketBoard.tickets',
     );
+    const [prevCursor, setPrevCursor] = useRemember<string | null>(
+        initialTicketBoard?.prevCursor ?? null,
+        'welcome.ticketBoard.prevCursor',
+    );
     const [nextCursor, setNextCursor] = useRemember<string | null>(
         initialTicketBoard?.nextCursor ?? null,
         'welcome.ticketBoard.nextCursor',
@@ -84,6 +89,7 @@ export default function Welcome() {
         'welcome.ticketBoard.hasLoadedTicketsOnce',
     );
     const [isLoadingTickets, setIsLoadingTickets] = useState(false);
+    const [isLoadingPrevTickets, setIsLoadingPrevTickets] = useState(false);
 
     const [luckySearch, setLuckySearch] = useRemember(
         '',
@@ -127,6 +133,7 @@ export default function Welcome() {
                     const payload = (page as unknown as TicketBoardPage).props
                         .ticketBoard;
                     setTickets(payload.data);
+                    setPrevCursor(payload.prevCursor ?? null);
                     setNextCursor(payload.nextCursor);
                     setHasLoadedTicketsOnce(true);
                 },
@@ -150,17 +157,8 @@ export default function Welcome() {
             return;
         }
 
-        const onScroll = () => {
+        const loadNext = () => {
             if (isLoadingTickets || !nextCursor) {
-                return;
-            }
-
-            const remaining =
-                scrollContainer.scrollHeight -
-                scrollContainer.scrollTop -
-                scrollContainer.clientHeight;
-
-            if (remaining > 80) {
                 return;
             }
 
@@ -187,6 +185,8 @@ export default function Welcome() {
                             }
                             return merged;
                         });
+
+                        setPrevCursor((current) => current ?? (payload.prevCursor ?? null));
                         setNextCursor(payload.nextCursor);
                     },
                     onFinish: () => {
@@ -196,6 +196,68 @@ export default function Welcome() {
             );
         };
 
+        const loadPrev = () => {
+            if (isLoadingPrevTickets || !prevCursor) {
+                return;
+            }
+
+            const beforeHeight = scrollContainer.scrollHeight;
+            const beforeTop = scrollContainer.scrollTop;
+
+            setIsLoadingPrevTickets(true);
+
+            router.get(
+                PUBLIC_TICKET_BOARD_URL,
+                { cursor: prevCursor, perPage: 60 },
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                    only: ['ticketBoard'],
+                    onSuccess: (page) => {
+                        const payload = (page as unknown as TicketBoardPage)
+                            .props.ticketBoard;
+
+                        setTickets((prev) => {
+                            const existing = new Set(prev.map((t) => t.number));
+                            const toPrepend: TicketBoardItem[] = [];
+                            for (const item of payload.data) {
+                                if (!existing.has(item.number)) {
+                                    toPrepend.push(item);
+                                }
+                            }
+                            return [...toPrepend, ...prev];
+                        });
+
+                        setPrevCursor(payload.prevCursor ?? null);
+                        setNextCursor((current) => current ?? payload.nextCursor);
+
+                        requestAnimationFrame(() => {
+                            const afterHeight = scrollContainer.scrollHeight;
+                            scrollContainer.scrollTop = beforeTop + (afterHeight - beforeHeight);
+                        });
+                    },
+                    onFinish: () => {
+                        setIsLoadingPrevTickets(false);
+                    },
+                },
+            );
+        };
+
+        const onScroll = () => {
+            const remainingBottom =
+                scrollContainer.scrollHeight -
+                scrollContainer.scrollTop -
+                scrollContainer.clientHeight;
+
+            if (remainingBottom <= 80) {
+                loadNext();
+            }
+
+            if (scrollContainer.scrollTop <= 80) {
+                loadPrev();
+            }
+        };
+
         scrollContainer.addEventListener('scroll', onScroll, {
             passive: true,
         });
@@ -203,7 +265,16 @@ export default function Welcome() {
         return () => {
             scrollContainer.removeEventListener('scroll', onScroll);
         };
-    }, [hasLoadedTicketsOnce, isLoadingTickets, nextCursor, setNextCursor, setTickets]);
+    }, [
+        hasLoadedTicketsOnce,
+        isLoadingPrevTickets,
+        isLoadingTickets,
+        nextCursor,
+        prevCursor,
+        setNextCursor,
+        setPrevCursor,
+        setTickets,
+    ]);
 
     useEffect(() => {
         if (!settings.ticketSelectionEnabled) {
@@ -722,7 +793,7 @@ export default function Welcome() {
                                         </div>
                                         <div
                                             data-ticket-board-scroll-container="true"
-                                            className={`custom-scrollbar relative grid max-h-[400px] grid-cols-8 gap-2 overflow-y-auto rounded-xl border border-stone-100 bg-stone-50 p-4 sm:grid-cols-10 md:grid-cols-12 ${!settings.ticketSelectionEnabled ? 'pointer-events-none opacity-60 grayscale' : ''}`}
+                                            className={`custom-scrollbar relative grid max-h-[400px] grid-cols-5 gap-2 overflow-y-auto rounded-xl border border-stone-100 bg-stone-50 p-4 sm:grid-cols-8 md:grid-cols-12 ${!settings.ticketSelectionEnabled ? 'pointer-events-none opacity-60 grayscale' : ''}`}
                                         >
                                             {!hasLoadedTicketsOnce ? (
                                                 <div className="col-span-full flex flex-col items-center justify-center py-8">

@@ -83,7 +83,7 @@ class TicketController extends Controller
             ->values();
 
         return Inertia::render('dashboard', [
-            'ticketBoard' => $this->ticketBoard($request),
+            'ticketBoard' => $this->ticketBoard($request, 61),
             'userSummary' => [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -106,9 +106,9 @@ class TicketController extends Controller
     }
 
     /**
-     * @return array{data: array<int, array{number:int, taken:bool}>, nextCursor: ?string}
+     * @return array{data: array<int, array{number:int, taken:bool}>, prevCursor: ?string, nextCursor: ?string}
      */
-    protected function ticketBoard(Request $request): array
+    protected function ticketBoard(Request $request, ?int $defaultStartAt = null): array
     {
         $perPage = (int) $request->integer('perPage', 60);
         $perPage = max(12, min(120, $perPage));
@@ -116,11 +116,27 @@ class TicketController extends Controller
         $cursor = $request->string('cursor')->toString();
         $cursor = $cursor !== '' ? $cursor : null;
 
+        if ($cursor === null) {
+            $startAt = $request->filled('startAt')
+                ? (int) $request->integer('startAt')
+                : $defaultStartAt;
+
+            if (is_int($startAt) && $startAt > 1) {
+                $warmup = Ticket::query()
+                    ->select(['ticketNumber', 'status'])
+                    ->orderBy('ticketNumber')
+                    ->cursorPaginate($startAt - 1, ['ticketNumber', 'status'], 'cursor');
+
+                $cursor = $warmup->nextCursor()?->encode();
+            }
+        }
+
         $paginator = Ticket::query()
             ->select(['ticketNumber', 'status'])
             ->orderBy('ticketNumber')
             ->cursorPaginate($perPage, ['ticketNumber', 'status'], 'cursor', $cursor);
 
+        $prevCursor = $paginator->previousCursor()?->encode();
         $nextCursor = $paginator->nextCursor()?->encode();
 
         $data = collect($paginator->items())
@@ -134,6 +150,7 @@ class TicketController extends Controller
 
         return [
             'data' => $data,
+            'prevCursor' => $prevCursor,
             'nextCursor' => $nextCursor,
         ];
     }

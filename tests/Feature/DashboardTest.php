@@ -64,21 +64,12 @@ test('dashboard includes recent activities for the authenticated user', function
 test('dashboard ticket board endpoint supports cursor pagination', function () {
     $user = User::factory()->create();
 
-    Ticket::factory()->createMany([
-        ['ticketNumber' => 1, 'status' => 'AVAILABLE'],
-        ['ticketNumber' => 2, 'status' => 'SOLD'],
-        ['ticketNumber' => 3, 'status' => 'AVAILABLE'],
-        ['ticketNumber' => 4, 'status' => 'SOLD'],
-        ['ticketNumber' => 5, 'status' => 'AVAILABLE'],
-        ['ticketNumber' => 6, 'status' => 'SOLD'],
-        ['ticketNumber' => 7, 'status' => 'AVAILABLE'],
-        ['ticketNumber' => 8, 'status' => 'SOLD'],
-        ['ticketNumber' => 9, 'status' => 'AVAILABLE'],
-        ['ticketNumber' => 10, 'status' => 'SOLD'],
-        ['ticketNumber' => 11, 'status' => 'AVAILABLE'],
-        ['ticketNumber' => 12, 'status' => 'SOLD'],
-        ['ticketNumber' => 13, 'status' => 'AVAILABLE'],
-    ]);
+    Ticket::factory()->createMany(collect(range(1, 140))
+        ->map(fn (int $number): array => [
+            'ticketNumber' => $number,
+            'status' => $number % 2 === 0 ? 'SOLD' : 'AVAILABLE',
+        ])
+        ->all());
 
     $response = $this
         ->actingAs($user)
@@ -89,10 +80,38 @@ test('dashboard ticket board endpoint supports cursor pagination', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->has('ticketBoard', fn (Assert $prop) => $prop
                 ->has('data', 12)
-                ->where('data.0.number', 1)
+                ->where('data.0.number', 61)
                 ->where('data.0.taken', false)
-                ->where('data.1.number', 2)
+                ->where('data.1.number', 62)
                 ->where('data.1.taken', true)
+                ->has('prevCursor')
+                ->has('nextCursor')
+            )
+        );
+});
+
+test('dashboard ticket board endpoint can start at a requested ticket number', function () {
+    $user = User::factory()->create();
+
+    Ticket::factory()->createMany(collect(range(1, 140))
+        ->map(fn (int $number): array => [
+            'ticketNumber' => $number,
+            'status' => $number % 2 === 0 ? 'SOLD' : 'AVAILABLE',
+        ])
+        ->all());
+
+    $this
+        ->actingAs($user)
+        ->get(route('dashboard.ticket-board', ['perPage' => 12, 'startAt' => 10]))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('ticketBoard', fn (Assert $prop) => $prop
+                ->has('data', 12)
+                ->where('data.0.number', 10)
+                ->where('data.0.taken', true)
+                ->where('data.1.number', 11)
+                ->where('data.1.taken', false)
+                ->has('prevCursor')
                 ->has('nextCursor')
             )
         );
@@ -151,6 +170,7 @@ test('guests can load public ticket board and check availability', function () {
                 ->where('data.0.taken', false)
                 ->where('data.1.number', 2)
                 ->where('data.1.taken', true)
+                ->has('prevCursor')
                 ->has('nextCursor')
             )
         );

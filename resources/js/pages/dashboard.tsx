@@ -37,6 +37,7 @@ type TicketBoardItem = { number: number; taken: boolean };
 
 type TicketBoardPayload = {
     data: TicketBoardItem[];
+    prevCursor?: string | null;
     nextCursor: string | null;
 };
 
@@ -119,10 +120,14 @@ export default function Dashboard() {
     const [tickets, setTickets] = useState<TicketBoardItem[]>(
         () => initialTicketBoard?.data ?? [],
     );
+    const [prevCursor, setPrevCursor] = useState<string | null>(
+        () => initialTicketBoard?.prevCursor ?? null,
+    );
     const [nextCursor, setNextCursor] = useState<string | null>(
         () => initialTicketBoard?.nextCursor ?? null,
     );
     const [isLoadingMoreTickets, setIsLoadingMoreTickets] = useState(false);
+    const [isLoadingPrevTickets, setIsLoadingPrevTickets] = useState(false);
 
     // Lucky Search State
     const [luckySearch, setLuckySearch] = useState('');
@@ -321,17 +326,8 @@ export default function Dashboard() {
             return;
         }
 
-        const onScroll = () => {
+        const loadNext = () => {
             if (isLoadingMoreTickets || !nextCursor) {
-                return;
-            }
-
-            const remaining =
-                scrollContainer.scrollHeight -
-                scrollContainer.scrollTop -
-                scrollContainer.clientHeight;
-
-            if (remaining > 80) {
                 return;
             }
 
@@ -358,6 +354,8 @@ export default function Dashboard() {
                             }
                             return merged;
                         });
+
+                        setPrevCursor((current) => current ?? (payload.prevCursor ?? null));
                         setNextCursor(payload.nextCursor);
                     },
                     onFinish: () => {
@@ -367,14 +365,80 @@ export default function Dashboard() {
             );
         };
 
-        scrollContainer.addEventListener('scroll', onScroll, {
-            passive: true,
-        });
+        const loadPrev = () => {
+            if (isLoadingPrevTickets || !prevCursor) {
+                return;
+            }
+
+            const beforeHeight = scrollContainer.scrollHeight;
+            const beforeTop = scrollContainer.scrollTop;
+
+            setIsLoadingPrevTickets(true);
+
+            router.get(
+                TICKET_BOARD_URL,
+                { cursor: prevCursor, perPage: 60 },
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                    only: ['ticketBoard'],
+                    onSuccess: (page) => {
+                        const payload = (page as unknown as TicketBoardPage).props
+                            .ticketBoard;
+
+                        setTickets((prev) => {
+                            const existing = new Set(prev.map((t) => t.number));
+                            const toPrepend: TicketBoardItem[] = [];
+                            for (const item of payload.data) {
+                                if (!existing.has(item.number)) {
+                                    toPrepend.push(item);
+                                }
+                            }
+                            return [...toPrepend, ...prev];
+                        });
+
+                        setPrevCursor(payload.prevCursor ?? null);
+                        setNextCursor((current) => current ?? payload.nextCursor);
+
+                        requestAnimationFrame(() => {
+                            const afterHeight = scrollContainer.scrollHeight;
+                            scrollContainer.scrollTop = beforeTop + (afterHeight - beforeHeight);
+                        });
+                    },
+                    onFinish: () => {
+                        setIsLoadingPrevTickets(false);
+                    },
+                },
+            );
+        };
+
+        const onScroll = () => {
+            const remainingBottom =
+                scrollContainer.scrollHeight -
+                scrollContainer.scrollTop -
+                scrollContainer.clientHeight;
+
+            if (remainingBottom <= 80) {
+                loadNext();
+            }
+
+            if (scrollContainer.scrollTop <= 80) {
+                loadPrev();
+            }
+        };
+
+        scrollContainer.addEventListener('scroll', onScroll, { passive: true });
 
         return () => {
             scrollContainer.removeEventListener('scroll', onScroll);
         };
-    }, [isLoadingMoreTickets, nextCursor, settings.ticketSelectionEnabled]);
+    }, [
+        isLoadingMoreTickets,
+        isLoadingPrevTickets,
+        nextCursor,
+        prevCursor,
+        settings.ticketSelectionEnabled,
+    ]);
 
     if (!user) return null; // Safety check during transition
 
