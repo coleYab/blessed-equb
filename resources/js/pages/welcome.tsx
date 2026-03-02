@@ -124,7 +124,7 @@ export default function Welcome() {
 
         router.get(
             PUBLIC_TICKET_BOARD_URL,
-            { perPage: 60 },
+            { perPage: 120, startAt: 61 },
             {
                 preserveScroll: true,
                 preserveState: true,
