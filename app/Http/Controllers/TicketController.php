@@ -83,7 +83,7 @@ class TicketController extends Controller
             ->values();
 
         return Inertia::render('dashboard', [
-            'ticketBoard' => $this->ticketBoard($request, 61),
+            'ticketBoard' => $this->ticketBoard($request, 131),
             'userSummary' => [
                 'id' => $user->id,
                 'name' => $user->name,
