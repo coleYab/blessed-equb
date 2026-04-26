@@ -11,10 +11,9 @@ use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
 Route::get('/', function () {
-    return redirect()->route('/not-found');
-    // return Inertia::render('welcome', [
-    //     'canRegister' => Features::enabled(Features::registration()),
-    // ]);
+    return Inertia::render('welcome', [
+        'canRegister' => Features::enabled(Features::registration()),
+    ]);
 })->name('home');
 
 Route::get('ticket-board', [TicketController::class, 'publicTicketBoard'])
